@@ -1,0 +1,382 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1 in, letterpaper]{geometry}
+\usepackage{fontspec, graphicx, amsmath, amssymb, amsthm, array, physics, enumitem, cancel, multicol, float, bm}
+\usepackage[dvipsnames]{xcolor}
+
+\setmainfont{Linux Libertine O}
+\setsansfont{Linux Biolinum O}
+\setmonofont{Latin Modern Mono}
+\setmathrm{Latin Modern Math}
+\theoremstyle{definition}
+\newtheorem{theo}{\color{Maroon} Theorem}[section] 
+\newtheorem{defin}[theo]{\color{Maroon} Definition}
+\newtheorem{example}[theo]{\color{Maroon} Example}
+\newtheorem{prob}[theo]{\color{Maroon} Problem}
+% \newtheorem{example}[section]{\color{Maroon} Example}
+\usepackage{lscape}
+\theoremstyle{remark}
+\newtheorem*{soln}{\color{Maroon} Solution}
+\usepackage{latexsym, marvosym}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%%%%%%%%%%%%%%%%%%% Statistics %%%%%%%%%%%%%%%%%%%%
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left[ #1 \right]}
+\newcommand{\cov}[2]{\textnormal{Cov}\left[ #1, #2 \right]}
+\renewcommand{\var}[1]{\textnormal{Var}\left[ #1 \right]}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\Bin}{\textnormal{Bin}}
+\newcommand{\Beta}{\textnormal{Beta}}
+\newcommand{\Bern}{\textnormal{Bern}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\FS}{\textnormal{FS}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\DUnif}{\textnormal{DUnif}}
+\newcommand{\Pois}{\textnormal{Pois}}
+\newcommand{\NBin}{\textnormal{NBin}}
+\newcommand{\HGeom}{\textnormal{HGeom}}
+\newcommand{\Gam}{\textnormal{Gamma}}
+\newcommand{\Mult}{\textrm{Mult}}
+\newcommand{\iidsim}{\overset{\text{iid}}{\sim}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttitle}{Section 08}
+\newcommand{\insertauthor}{Max Guo \& Seung Hwan An}
+\newcommand{\insertcourse}{STAT 110}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\thepage}
+\fancyhead[L]{\inserttitle}
+\fancyhead[R]{\insertauthor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+{\noindent\Huge\bf  \\[0.1\baselineskip] {\inserttitle }}\\[2\baselineskip]
+{{\bf \insertcourse}\\ {\textit{November 8, 2021}}} \hfill {\large \textsc{\insertauthor}}
+\smallskip
+
+\hfill \noindent \textit{Credits to Vincent Li and Dylan Li}
+
+\section{Multinomial (Multivariate Discrete)}
+
+	\textbf{Review}: Binomial is a simple case of multinomial.
+	
+	Let us say that the vector $\vec{\textbf{X}} = (X_1, X_2, X_3, \dots, X_k) \sim \textnormal{Mult}_k(n, \vec{p})$  where $\vec{p} = (p_1, p_2, \dots, p_k)$.
+\begin{description}
+	\item[Story] - We have $n$ items, and then can fall into any one of the $k$ buckets independently with the probabilities $\vec{p} = (p_1, p_2, \dots, p_k)$.
+	\item[Example] - Let us assume that every year, 100 students in the Harry Potter Universe are randomly and independently sorted into one of four houses with equal probability. The number of people in each of the houses is distributed Mult$_4$(100, $\vec{p}$), where $\vec{p} = (.25, .25, .25, .25)$.
+		Note that $X_1 + X_2 + \dots + X_4 = 100$, and they are dependent.
+	\item[Multinomial Coefficient] The number of permutations of $n$ objects where you have $n_1, n_2, n_3 \dots, n_k$ of each of the different variants is the \textbf{multinomial coefficient}.
+		\[{n \choose n_1n_2\dots n_k} = \frac{n!}{n_1!n_2!\dots n_k!}\]
+	\item[Joint PMF] - For $n = n_1 + n_2 + \dots + n_k$
+		\[P(X_1 = n_1, X_2 = n_2, \dots, X_k = x_k) = {n \choose n_1n_2\dots n_k}p_1^{n_1}p_2^{n_2}\dots p_k^{n_k}\]
+	\item[Lumping] - If you lump together multiple categories in a multinomial, then it is still multinomial. A multinomial with two dimensions (success, failure) is a binomial distribution.
+	\item[Marginal PMF and Conditioning]
+		\[X_i \sim \Bin(n, p_i)\]
+		\[X_i + X_j \sim \Bin(n, p_i + p_j)\]
+		\[X_i + X_j \sim \Bin(n, p_i + p_j)\]
+		\[X_1, X_2, X_3 \sim \Mult_3(n, (p_1, p_2, p_3)) \Longrightarrow X_1, X_2 + X_3 \sim \Mult_2(n, (p_1, p_2 + p_3))\]
+		\[X_1, X_2, \dots, X_{k-1} | X_k = n_k \sim \Mult_{k-1}\left(n - n_k, \left(\frac{p_1}{1 - p_k}, \frac{p_2}{1 - p_k}, \dots, \frac{p_{k-1}}{1 - p_k}\right)\right)\]
+	\item[Covariance] For $i \neq j$, $\cov{X_i}{X_j} = - n p_i p_j$. We calculate this using the very useful fact that we know all the marginals, and hence know $\var{X_i} = n p_i (1-p_i)$, $\var{X_j}=n p_j (1-p_j)$ and $\var{X_i+X_j} = n (p_i+p_j) (1-p_i-p_j)$. Now use the fact that $$ \var{X_i + X_j} = \var{X_i} + \var{X_j} + 2 \cov{X_i}{X_j}$$ to get that $$\cov{X_i}{X_j} = - n p_i p_j $$
+\end{description}
+
+\section{Multivariate Uniform (Multivariate Continuous)}
+
+\textbf{Review}: Uniform is a simple case of multivariate uniform. 
+\begin{description}
+    \item[Story] - Geometrically, we can think of picking a random point within some length, area, or volume. 
+    \item[Distribution] - If $\bm{X} = (X_1, \ldots, X_k) \sim \Unif(S)$ where $\bm{X}$ is a $k$ dimensional random variable, and $S \subset \R^k$, and $|S|$ denotes the ``measure'' (length/area/volume of region $S$) of then the PDF of $\bm{X}$ is $$ f_{\bm{X}}(x) = \begin{cases} 1/|S| & x \in S \\ 0 & x \not\in S \end{cases} $$ Note that in general $X_1, \ldots, X_k$ won't be independent (unless region $S$ is a rectangle/rectangular prism)
+\end{description}
+
+\section{Multivariate Normal (MVN)}
+
+\textbf{Review}: Normal is a simple case of multivariate normal. 
+\begin{description}
+    \item[Definition] - A $k$ dimensional vector $\bm{X} = (X_1, \ldots, X_k)$ has a multivariate normal distribution if every linear combination of $X_j$'s is normal. That is, for every vector $\bm{a} \in \R^k$, $\langle \bm{a} , \bm{X} \rangle$ is normal.
+    \item[Distribution] - MVN distribution is uniquely characterized by its \textbf{mean vector} $\bm{\mu}$, which is a $k$ dimensional vector where $\mu_j = \E{X_j}$, and \textbf{covariance matrix} $\bm{V}$, which is a $k \times k$ positive semidefinite\footnote{A positive semidefinite $k \times k$ matrix $A$ is such that for every $k$ dimensional vector $x \in \R^k$, $x^T A x \geq 0$. The very short explanation why this is required is that $x^T A x$ gives the variance of some linear combination of $X_1, \ldots, X_k$ stated above, and variance is always positive (hence the requirement for positive semidefiniteness)} matrix 
+    \item[Properties] - Why we are interested in MVN distribution is for the same reason we are interested in normal distribution! Many limiting distributions that naturally come up in one dimension involve normal distribution, while in higher dimensions, involve MVN. Here are some important properties:
+    \begin{itemize}
+        \item If $\bm{X} = (X_1, X_2, \ldots, X_k) \sim \Norm_k$ ($k$ dimensional MVN), then for any $\ell \leq k$ dimensional subvector $\bm{X}' = (X_{i_1}, X_{i_2}, \ldots, X_{i_{\ell}})$ where $i_1, \ldots, i_{\ell}$ are picked distinctly from indices $1, \ldots, k$, $\bm{X}' \sim \Norm_{\ell}$. That is, any subvector of a MVN distributed vector is distributed MVN. 
+        \item For any $m \times k$ matrix $\bm{A}$, $\bm{A} \bm{X} \sim \Norm_m$.
+        \item Within an MVN, uncorrelated implies independence (important to remember that this in general is not true). That is, if $\bm{X} = (X_1, X_2) \sim \Norm_2$, where $\cov{X_1}{X_2} = 0$, then $X_1$ is independent of $X_2$. 
+    \end{itemize}
+    
+    Note that for $\bm{Z} = (Z_1, \ldots, Z_k)$ where $Z_i \overset{\text{iid}}{\sim} \Norm(0,1)$, we have $$\bm{Z} \sim \Norm_k(\vec{0}_k, I_k)$$ Something you should be able to check with a hefty bit of linear algebra is that if $\bm{Y} = \bm{A} \bm{Z} + \bm{\mu}$ where $\bm{A}$ is a $m \times k$ matrix and $\bm{\mu}$ is a $m$ dimensional vector, is that $$ \bm{Y} \sim \Norm_m (\bm{\mu}, \bm{A} \bm{A}^T)$$
+\end{description}
+
+
+
+\pagebreak
+
+\section{Transformation}
+
+We already know how to do transformations of discrete random variables: given distribution of discrete r.v. $X$, to get the PMF of $g(X)$ for some function $g$, we note that $$\Pr[ g(X) = k ] = \sum_{ y : g(y) = k } \Pr[ X = y ]$$ For continuous this kind of straightforward calculation fails, since we are no longer with PMFs. Hence, we use a Jacobian for continuous r.v. to get the PDF of $g(X)$.
+
+\begin{description}
+	\item[Why do we need the Jacobian?] We need the Jacobian to rescale our PDF so that it integrates to 1.
+	\item[One Variable Transformations] Let's say that we have a random variable $X$ with PDF $f_X(x)$, but we are also interested in some function of $X$. We call this function $Y = g(X)$. Note that $Y$ is a random variable as well. If $g$ is \textbf{differentiable} and \textbf{one-to-one} (every value of $X$ gets mapped to a unique value of $Y$), then the following is true:
+	\[f_Y(y) = f_X(x)\left|\frac{dx}{dy}\right| \quad \textnormal{ or } \quad  f_Y(y) \left|\frac{dy}{dx}\right|= f_X(x)\]
+	To find $f_Y(y)$ as a function of $y$, plug in $x = g^{-1}(y)$.
+	\[f_Y(y) = f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|\]
+	The derivative of the inverse transformation is referred to the \textbf{Jacobian}, denoted as $J$.
+	\[J = \frac{d}{dy}g^{-1}(y)\]
+	\item[Two Variable Transformations] Similarily, let's say we know the joint distribution of $U$ and $V$ but are also interested in the random vector $(X, Y)$ found by $(X, Y) = g(U, V)$. If $g$ is differentiable and one-to-one, then the following is true:
+	\[f_{X,Y}(x, y) = f_{U,V}(u,v)\left| \left| 
+	\begin{array}{ccc}
+		\frac{\partial u}{\partial x} & \frac{\partial u}{\partial y} \\
+		\frac{\partial v}{\partial x} & \frac{\partial v}{\partial y} 
+	\end{array}
+	\right| \right| \quad \textnormal{ or } \quad f_{X,Y}(x, y) \left| \left| 
+	\begin{array}{ccc}
+		\frac{\partial x}{\partial u} & \frac{\partial x}{\partial v} \\
+		\frac{\partial y}{\partial u} & \frac{\partial y}{\partial v} 
+	\end{array}
+	\right| \right| = f_{U,V}(u,v) 
+	\]
+	The outer $||$ signs around our matrix tells us to take the absolute value. The inner $||$ signs tells us to the matrix's determinant. Thus the two pairs of $||$ signs tell us to take the absolute value of the determinant matrix of partial derivatives. In a 2x2 matrix, 
+	\[ \left| \left|
+	\begin{array}{ccc}
+		a & b \\
+		c & d
+	\end{array}
+	\right| \right| = |ad - bc|\]
+	The determinant of the matrix of partial derivatives is referred to the \textbf{Jacobian}, denoted as $J$.
+	\[\left| \begin{array}{ccc}
+		\frac{\partial u}{\partial x} & \frac{\partial u}{\partial y} \\
+		\frac{\partial v}{\partial x} & \frac{\partial v}{\partial y} 
+	\end{array}\right| = J\]
+
+    \pagebreak
+
+\end{description}
+
+\section{Convolutions}
+    
+\begin{description}
+    \item[Definition] - A convolution is a \textit{sum of independent r.v.s}. 
+    \item[Distribution] - Let $T = X+Y$, with $X,Y$ independent. Then, if $X,Y$ are discrete, then PMF of $T$ is: $$ P( T = t) = \sum_{x} P(Y = t-x) P( X = x) = \sum_y P(X = t- y) P(Y= y) $$
+    If $X,Y$ are continuous, then PDF Of $T$ is $$ f_T(t) = \int_{-\infty}^{\infty} f_Y(t-x) f_X(x) dx = \int_{-\infty}^{\infty} f_X(t-y) f_Y(y) dy $$
+\end{description}
+
+\section{Gamma Function}
+\begin{description}
+\item[Recursive Definition] - Extension of the factorial function to all real (and complex) numbers. When $n$ is a positive integer, 
+	\[\Gamma(n) = (n-1)!\]
+For all values of $n$ (except -1 and 0),
+	\[\Gamma(n + 1) = n\Gamma(n)\]
+\item[Closed-form Definition] - The Gamma function is defined as:
+	\[\Gamma(n) = \int_0^\infty t^{n-1}e^{-t}dt\]
+\end{description}
+
+\section{Gamma Distribution}
+$X \sim \Gam(a, \lambda)$. Then:
+\begin{description}
+\item[Story] Sum of $a$ independent $\Expo(\lambda)$ r.v.s.
+\item[PDF] The PDF of $\Gam(a, \lambda)$ distribution is:
+\begin{eqnarray*}
+f(x) = \frac{1}{\Gamma(a)}(\lambda x)^ae^{-\lambda x}\frac{1}{x},
+\hspace{.1 in}
+x \in [0, \infty)
+\end{eqnarray*}
+\item[Properties and Representations]
+\vspace{-.4 cm}
+	\begin{eqnarray*}
+		\E{X} = \frac{a}{\lambda} && \var{X} = \frac{a}{\lambda^2} \\
+		X \sim \Gam(a, \lambda) &\longrightarrow& X = X_1 + X_2 + ... X_a \textnormal{ for $X_i$ i.i.d. $\Expo(\lambda)$} \\
+		X \sim \Gam(a, \lambda), Y \sim \Gam(b, \lambda) &\longrightarrow& X+Y \sim \Gam(a+b, \lambda) \\
+		\Gam(1, \lambda) &\sim& \Expo(\lambda) 
+	\end{eqnarray*}
+\end{description}
+
+% \section{Beta Distribution}
+% $X \sim \Beta(a, b)$. Then:
+% \begin{description}
+% 	\item[Story (Bank/Post-Office)] Let's say that your waiting time at the bank is distributed $X \sim \Gam(a, \lambda)$ and that your waiting time at the post-office, independent of waiting time at the bank, is distributed $Y \sim \Gam(b, \lambda)$. You visit both of them while doing errands. Your total waiting time at both is $X + Y \sim \Gam(a + b, \lambda)$ and the fraction of your time that you spend waiting at the Bank is $\frac{X}{X+Y} \sim \Beta(a, b)$. The fraction is not dependent on $\lambda$, and $\frac{X}{X+Y} \independent X + Y$.
+% 	\item[PDF] The PDF of a Beta is:
+% 		\begin{eqnarray*}
+% 		f(x) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1},
+% 		\hspace{.1 in}
+% 		x \in (0, 1)
+% 		\end{eqnarray*}
+
+% \item[Order Statistics of the Uniform] - The distribution of the the $j^{th}$ order statistic of $n$ i.i.d Uniforms is:
+% 	$$U_{(j)} \sim \Beta(j, n - j + 1) $$
+	
+% \item[Conjugate Prior of the Binomial] - A prior is the distribution of a parameter before you observe any data ($f(x)$). A posterior is the distribution of a parameter after you observe data $y$ ($f(x|y)$). Beta is the \emph{conjugate} prior of the Binomial because if you have a Beta-distributed prior on $p$ (the parameter of the Binomial), then the posterior distribution on $p$ given observed data is also Beta-distributed. This means, that in a two-level model:
+% 	\begin{align*}
+% 		X|p &\sim \Bin(n, p) \\
+% 		p &\sim \Beta(a, b) 
+% 	\end{align*}
+% Then after observing the value $X = x$, we get a posterior distribution $$p|(X=x) \sim \Beta(a + x, b + n - x)$$
+
+
+% \item[Properties and Representations]
+% \vspace{-.4 cm}
+% 	\begin{eqnarray*}
+% 		E(X) &=& \frac{a}{a + b} \\
+% 		\Beta(1, 1) &\sim& \Unif(0, 1) \\
+% 		X \sim \Beta(a, b) &\longrightarrow& 1-X \sim \Beta(b, a) 
+% 	\end{eqnarray*}
+% \end{description}
+
+% \section{Bank and Post Office Result}
+% Let us say that we have $X \sim \Gam(a, \lambda)$ and $Y \sim \Gam(b, \lambda)$, and that $X \independent Y$. By Bank-Post Office result, we have that:
+% \begin{align*}
+% 	X + Y &\sim \Gam(a + b, \lambda)\\
+% 	\frac{X}{X + Y} &\sim \Beta(a, b)\\
+% 	X + Y &\independent \frac{X}{X + Y}
+% \end{align*}
+
+% \section{Order Statistics}
+% \begin{description}
+% 	\item[Definition] - Let's say you have $n$ i.i.d. random variables $X_1, X_2, X_3, \dots X_n$. If you arrange them from smallest to largest, the $i$th element in that list is the $i$th order statistic, denoted $X_{(i)}$. $X_{(1)}$ is the smallest out of the set of random variables, and $X_{(n)}$ is the largest.
+% 	\item[Properties] - The order statistics are dependent random variables. The smallest value in a set of random variables will always vary and itself has a distribution. For any value of $X_{(i)}$, $X_{(i+1)} \geq X_{(j)}$.
+% 	\item[Distribution] - Taking $n$ i.i.d. random variables $X_1, X_2, X_3, \dots X_n$ with CDF $F(x)$ and PDF $f(x)$, the CDF and PDF of $X_{(i)}$ are as follows:
+% 	\begin{align*}
+% 		F_{X_{(i)}}(x) &= P (X_{(j)} \leq x) = \sum_{k=i}^n {n \choose k} F(x)^k(1 - F(x))^{n - k} \\
+% 		f_{X_{(i)}}(x) &= n{n - 1 \choose i - 1}F(x)^{i-1}(1 - F(X))^{n-i}f(x)
+% 	\end{align*}
+% 	\item[Universality of the Uniform] - We can also express the distribution of the order statistics of $n$  i.i.d. random variables $X_1, X_2, X_3, \dots X_n$ in terms of the order statistics of $n$ uniforms. We have that
+% 	\[F(X_{(j)}) \sim U_{(j)}\]
+% \end{description}
+
+
+\pagebreak
+
+\section{Practice Problems}
+\begin{prob} \textbf{(BH 7.53)} A drunken man wanders around randomly in a large space. At each step, he moves one unit of distance North, South, East, or West, with equal probabilities. Choose coordinates such that his initial position is $(0,0)$. Let $(X_n, Y_n)$ and $R_n$ be his position and distance from the origin after $n$ steps, respectively. 
+
+\begin{enumerate}[label = (\alph*)]
+    \item Is $X_n$ independent of $Y_n$?
+    
+    \fbox{\parbox{0.9 \textwidth}{No. If $X_n = n$, we know for sure that $Y_n = 0$.}}
+    % \vspace{0.5 in}
+    
+    \item Find $\cov{X_n}{Y_n}$. \\
+    (Hint: Express $X_n,Y_n$ as sums of some other random variables, then use bilinearity of covariance.)
+    
+    % \vspace{4 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{Let us define $I_n = X_n - X_{n-1}$ and $J_n = Y_n - Y_{n-1}$, where $I_n$ is $1$ if the drunken man goes right on the $n$th step, $-1$ if left, and $0$ otherwise, and similarly for $J_n$ (instead for up and down). Then, $X_n = \sum_{i=1}^{n} I_i$ and $Y_n = \sum_{j=1}^{n} J_j$. Note that $I_i$ and $J_j$ are information about $i$th and $j$th step, so since different steps are independent, for $i \neq j$, $I_i$ and $J_j$ are independent. Therefore, $$ \cov{X_n}{Y_n} = \sum_{i=1}^n \cov{I_i}{J_i} + \sum_{i \neq j}^n \underbrace{\cov{I_i}{J_j}}{=0} $$ Now since mean of $I_i$ and $J_i$ are both zero, $$ \cov{I_1}{J_1} = \E{ I_1 J_1 } = 0 $$ Hence $X_n$ and $Y_n$ are uncorrelated!}}
+    
+    \item Find $\E{R_n^2}$.
+    
+
+    \fbox{\parbox{0.9 \textwidth}{Since $R_n^2 = X_n^2 + Y_n^2$, and by symmetry, $\E{X_n^2} = \E{Y_n^2}$. Also, by symmetry $\E{X}=0$. Therefore, $$ \E{R_n^2} = \E{X_n^2} + \E{Y_n^2} = 2 \E{X_n^2} = 2 \var{X_n} = 2 \sum_{i=1}^n \var{I_i} = 2n \var{I_1} $$ Note $\var{I_1} = \E{I_1^2} = 1/2$. Hence, $\E{R_n^2} = n$.}} 
+\end{enumerate}
+\end{prob}
+
+\pagebreak
+
+\begin{prob} \textbf{(Order Statistics and Multinomial)}
+
+Let $U_1, U_2, \ldots, U_{10} \overset{\text{iid}}{\sim} \Unif(0,4)$, and the order statistics $U_{(1)}, U_{(2)}, \ldots, U_{(10)}$, where $U_{(j)}$ is the $j$th smallest element out of $U_1, \ldots, U_{10}$. Compute:
+
+\begin{enumerate}[label = (\alph*)]
+    \item $\Pr[U_{(4)} < 1 < U_{(5)} < 3 < U_{(6)}]$. \\
+    (Hint: Think about different intervals as your ``buckets'' these r.v.s can fall into).
+    
+    % \vspace{1.5 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{Suppose that there are three buckets, of intervals $[0,1]$, $[1,3]$, $[3,4]$ with probabilities $1/4, 1/2, 1/4$. It is asking, what is the probability that I have 4 elements in bucket 1, 1 element in bucket 2, and 5 elements in bucket 3. Hence, this is: for $\bm{X} = (X_1, X_2, X_3) \sim \Mult_3(10, (1/4,1/2,1/4))$, $P(X_1=4,X_2=1,X_3=5)$. Hence, this is just $$ \frac{10!}{4!1!5!} \left( \frac{1}{4} \right)^4 \left( \frac{1}{2} \right) \left( \frac{1}{4} \right)^5 = \frac{10!}{2^{19}4!1!5!} $$}}
+    
+    \item For this part only, do part (a) again but with $U_1, \ldots, U_{10} \sim \Expo(1)$
+    
+    % \vspace{1.5 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{Everything from part (a) still applies, but our boxes are intervals $[0,1],[1,3],[3,\infty]$. Hence, our multinomial distribution now has different probabilities of $$\int_0^1 e^{-x} dx = 1-e^{-1}, \int_1^3 e^{-x} dx = e^{-1}-e^{-3}, \int_3^{\infty} e^{-x} dx = e^{-3}$$ Hence, our answer is $$\frac{10!}{4!1!5!} \left( 1-e^{-1} \right)^4 \left( e^{-1}-e^{-3} \right) \left( e^{-3} \right)^5$$}}
+    
+    \item $\Pr[1 < U_{(3)} < U_{(5)} < 3]$ (leave the answer as an unsimplified sum).
+    
+    \fbox{\parbox{0.9 \textwidth}{This is an equivalent event to: $X_1 \leq 2$, $X_2 \geq 3$, $X_3 \leq 5$. Hence, this is equal to \begin{align*}
+        \Pr[ X_1 \leq 2, X_2 \geq 3, X_3 \leq 5] & = \Pr[X_1 \leq 2, X_3 \leq 5] \\ & = \sum_{i=0}^2 \sum_{j=0}^5 \Pr[X_1 = i, X_2 = 10-i-j, X_3 = j] \\
+        & = \sum_{i=0}^2 \sum_{j=0}^5 \frac{10!}{i!j!(10-i-j)!} \left( \frac{1}{4} \right)^i \left( \frac{1}{2} \right)^{(10-i-j)} \left( \frac{1}{4} \right)^{j} \\
+        & = \sum_{i=0}^2 \sum_{j=0}^5 \frac{10!}{2^{(10+i+j)}i!j!(10-i-j)!}
+    \end{align*}}}
+    
+\end{enumerate}
+\end{prob}
+
+\pagebreak
+
+\begin{prob} \textbf{(Conditional Expectation of Bivariate Normal)}
+
+\begin{enumerate}[label = (\alph*)]
+    \item Let $X_1, X_2, \ldots, X_n$ be iid. Then, show that $$ \E{ X_1 | X_1 + X_2 + \ldots + X_n = y } = y/n $$ \\ (Hint: Use symmetry and linearity of expectation)
+    
+    % \vspace{1.5 in}
+    \fbox{\parbox{0.9 \textwidth}{By symmetry, $\E{X_i | \sum_j X_j = y}$ are equal for all $i$. Hence, \begin{align*} \E{ X_1 + X_2 + \ldots + X_n | X_1 + X_2 + \ldots + X_n = y } & = \sum_{i=1}^n \E{X_i | X_1 + X_2 + \ldots + X_n} \\ & = n \E{ X_1 | X_1 + X_2 + \ldots + X_n = y } \end{align*} But $\E{ X_1 + X_2 + \ldots + X_n | X_1 + X_2 + \ldots + X_n = y } = y$, so $$ \E{ X_1 | X_1 + X_2 + \ldots + X_n = y } = y/n $$}}
+    
+    \item Let $X \sim \Norm(0,a)$ and $W \sim \Norm(0,b)$ with $X$ independent of $W$, and $a,b$ positive integers. Using part (a), compute $$\E{X | X+W = z }$$ \\
+    (Hint: Use the fact that for $Z_1,\ldots,Z_n \iidsim \Norm(0,1)$, $Z_1 + \ldots + Z_n \sim \Norm(0,a)$)
+    
+    % \vspace{3 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{We can represent $X = \sum_{j=1}^a Y_i$ and $W = \sum_{j=a+1}^{a+b} Y_i$, where $Y_1, \ldots, Y_{a+b} \iidsim \Norm(0,1)$. Hence, \begin{align*} \E{X | X+ W = z} & = \E{ Y_1 + \ldots + Y_a | Y_1 + \ldots + Y_{a+b} = z} \\
+    & = \sum_{i=1}^a \E{ Y_i| Y_1 + \ldots + Y_{a+b} = z} \\
+    & = \sum_{i=1}^a \frac{z}{a+b} \\
+    & = \frac{az}{a+b}
+    \end{align*}
+    
+    In fact, we do not actually need the condition that $a,b$ are positive integers. We can relax the condition to that $a,b$ are rationals of form $a_1/a_2, b_1/b_2$, then we can express them as sum of normally distributed r.v.s with variance $1/(a_2b_2)$.}}\footnote{We can actually further relax this condition to saying that they are all positive real numbers, since the rationals are dense in $\R$, and hence we can get a monotonically increasing sequence of approximate random variables that converge to $X,W$. (Not going to formally state this here, since convergence of conditional expectation is quite complicated to prove, but take STAT 210 if you want to learn how this argument works!)}
+    
+    \item Does the same argument work if $X \sim \Pois(a)$ and $Y \sim \Pois(b)$ (with same conditions as part (b))?
+    
+    \fbox{\parbox{0.9 \textwidth}{Yes. Since the only part about normal distribution that we needed was the fact that sum of $a$ iid standard normal is $\Norm(0,a)$, the exact same argument works for Poisson distribution since sum of $a$ iid $\Pois(1)$ is $\Pois(a)$.}}
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob} \textbf{(Box Mueller Representation)}
+
+\begin{enumerate}[label = (\alph*)]
+    \item Let $U \sim \Unif(0, 2\pi)$ and $ T \sim \Expo(1)$ be independent of $U$. Define $$ X = \sqrt{2T} \cos U , \qquad Y = \sqrt{2T} \sin U$$ Find the joint PDF of $(X,Y)$. Are they independent?
+
+    % \vspace{3 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{ First, the joint distribution of $U,T$ is $$f_{U,T} = \frac{1}{2 \pi} e^{-t} $$ Also, we know that $T = \frac{X^2+Y^2}{2}$ and $U = \tan^{-1}(Y/X)$. Hence, $$ \left\|\pmqty{ \pdv{u}{x} & \pdv{u}{y} \\ \pdv{t}{x} & \pdv{t}{y}}\right\| = \left\|\pmqty{\frac{-y/x^2}{1+(y/x)^2} & \frac{1/x}{1+(y/x)^2}\\ x & y }\right\| = 1$$
+    
+    And thus $$ f_{X,Y} = \frac{1}{2 \pi} e^{-t} = \frac{1}{\sqrt{2 \pi}} e^{-x^2/2} \frac{1}{\sqrt{2 \pi}} e^{-y^2/2} $$ Since the joint distribution of $X,Y$ is separable into marginals of $X$ and $Y$, this implies that $X$ is independent of $Y$, and that $X, Y \sim \Norm(0,1)$.  }}
+    
+    \item Use LOTP on the CDF of $\sin(2U)$ to prove that $\sin(2U) \sim \sin(U)$ for $U \sim \Unif(0,2\pi)$. 
+    
+    \fbox{\parbox{0.9 \textwidth}{
+    First, note that $\sin U = \sin (U + 2 \pi)$. Also, note that $U + 2\pi \sim \Unif(2\pi, 4\pi)$ and $2U \sim \Unif(0,4\pi)$. Therefore, we can conclude that $$ 2U | 2U \leq 2\pi \sim \Unif(0, 2\pi) \sim U $$ $$2U | 2U > 2\pi \sim \Unif(2\pi, 4\pi) \sim U + 2\pi$$ Hence we conclude that $$ \sin(2U) | 2U \leq 2\pi \sim \sin U \sim \sin(U+2\pi) \sim \sin(2U) | 2U > 2\pi$$ Now, by LOTP, \begin{align*} \Pr[ \sin(2U) \leq k ] & = \Pr[ \sin(2U) \leq k | 2U \leq 2\pi] \Pr[ 2U \leq 2\pi] \\ & \hspace{2 in} + \Pr[ \sin(2U) \leq k | 2U > 2\pi] \Pr[ 2U > 2\pi] \\
+    & = \Pr[ \sin U \leq k ] \frac{1}{2} + \Pr[ \sin U \leq k ] \frac{1}{2} \\
+    & = \Pr[ \sin U \leq k ]
+    \end{align*}
+    Therefore the CDF of $\sin(2U)$ and $\sin U$ is the same, and thus they have the same distribution.
+    }}
+    
+    \pagebreak
+
+    \item Suppose $X,Y \iidsim \Norm(0,1)$. Use part (a) and (b) to derive the distribution of $$\frac{2XY}{\sqrt{X^2 + Y^2}}$$ 
+    
+    \fbox{\parbox{0.9 \textwidth}{ Plugging in the Box-Muller representation from part (a), we get that $$ \frac{2XY}{\sqrt{X^2 + Y^2}} = \frac{ 2 \sqrt{2T}^2 \sin(U) \cos (U)}{\sqrt{2T (\cos^2 U + \sin^2 U)}} = \sqrt{2T} \sin(2U) \sim \sqrt{2T} \sin U \sim Y \sim \Norm(0,1)$$ Note that we can say $\sqrt{2T} \sin (2U) \sim \sqrt{2T} \sin (U)$ not only because of part (b) but also because $U,T$ are \textit{independent}. 
+    
+    \medskip
+    
+    Results like this is why coming up with different representations through transformation can be very useful!}}
+\end{enumerate}
+    
+    
+    
+
+\end{prob}
+
+\end{document}

@@ -1,0 +1,342 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1 in, letterpaper]{geometry}
+\usepackage{fontspec, graphicx, amsmath, amssymb, amsthm, array, physics, enumitem, cancel, multicol, float}
+\usepackage[dvipsnames]{xcolor}
+
+\setmainfont{Linux Libertine O}
+\setsansfont{Linux Biolinum O}
+\setmonofont{Latin Modern Mono}
+\setmathrm{Latin Modern Math}
+\theoremstyle{definition}
+\newtheorem{theo}{\color{Maroon} Theorem}[section] 
+\newtheorem{defin}[theo]{\color{Maroon} Definition}
+\newtheorem{example}[theo]{\color{Maroon} Example}
+\newtheorem{prob}[theo]{\color{Maroon} Problem}
+% \newtheorem{example}[section]{\color{Maroon} Example}
+\usepackage{lscape}
+\theoremstyle{remark}
+\newtheorem*{soln}{\color{Maroon} Solution}
+\usepackage{latexsym, marvosym}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+%%%%%%%%%%%%%%%%%%% Statistics %%%%%%%%%%%%%%%%%%%%
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left[ #1 \right]}
+\newcommand{\cov}[2]{\textnormal{Cov}\left[ #1, #2 \right]}
+\renewcommand{\var}[1]{\textnormal{Var}\left[ #1 \right]}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\Bin}{\textnormal{Bin}}
+\newcommand{\Beta}{\textnormal{Beta}}
+\newcommand{\Bern}{\textnormal{Bern}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\FS}{\textnormal{FS}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\DUnif}{\textnormal{DUnif}}
+\newcommand{\Pois}{\textnormal{Pois}}
+\newcommand{\NBin}{\textnormal{NBin}}
+\newcommand{\HGeom}{\textnormal{HGeom}}
+\newcommand{\Gam}{\textnormal{Gamma}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttitle}{Section 06}
+\newcommand{\insertauthor}{Max Guo \& Seung Hwan An}
+\newcommand{\insertcourse}{STAT 110}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\thepage}
+\fancyhead[L]{\inserttitle}
+\fancyhead[R]{\insertauthor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+{\noindent\Huge\bf  \\[0.1\baselineskip] {\inserttitle }}\\[2\baselineskip]
+{{\bf \insertcourse}\\ {\textit{September 13, 2021}}} \hfill {\large \textsc{\insertauthor}}
+\smallskip
+
+\hfill \noindent \textit{Credits to Vincent Li and Dylan Li}
+
+\section{Review of Random Variables and Distributions}
+
+\begin{description}
+
+\item[Distribution] A distribution of a random variable can either be discrete, continuous, or mixed. A discrete r.v. takes on finite or countably infinite values, while a continuous r.v. takes on uncountably infinite values. We can fully represent the distribution of an r.v. $X$ by its CDF: $$ F_X(x) = P(X \leq x) $$ or its PMF (discrete) or PDF (continuous) $$ \text{PMF: } f_X(x) = P(X=x) \qquad \text{PDF: } f_X(x) = F_X'(x) $$
+
+\item[Expectation] For a discrete r.v. $X$, its expectation is $$ \E{X} = \sum_{x \in \text{support}(X)} x P(X=x) $$ Expectation follows linearity, that is, for any constant $a,b,c$, $$ \E{aX+bY+c}=a\E{X}+b\E{Y}+c$$ By LOTUS, for any function $g$, $$\E{g(X)} = \sum_{x \in \text{support}(X)} g(x) P(X=x) $$ For any continuous r.v. $Y$, its expectation is $$ \E{Y} = \int_{\text{support}(Y)} y f_Y(y) \dd{y} $$ and similarly by LOTUS, for any function $g$, $$ \E{g(Y)} = \int_{\text{support}(Y)} g(y) f_Y(y) \dd{y} $$ 
+    
+\item[Variance] Variance of $X$ is defined as $$ \var{X} = \E{(X-\E{X})^2} = \E{X^2} - (\E{X})^2 $$ Variance of \textbf{\underline{independent}} $X,Y$ add, in that $$\var{X+Y} = \var{X}+\var{Y}$$ Variance is quadratic, in that for any constant $a$, $$\var{aX} = a^2 \var{X}$$ Adding constants do not change the variance: $\var{X+b} = \var{X}$ for constant $b$.
+\end{description}
+
+\pagebreak
+
+\begin{landscape}
+\section{Named Distributions}
+
+\begin{description}
+\item[Discrete Distributions] .
+
+\noindent \begin{center}
+\begin{tabular}{cccccc}
+\textbf{Distribution} & \textbf{PMF and Support} & \textbf{E(X)}  & \textbf{Variance} & \textbf{Story}\\
+\hline
+\shortstack{\textbf{Bernoulli} \\ \Bern($p$)} & \shortstack{$P(X=1) = p$ \\$ P(X=0) = q$} & $p$ & $pq$ & Trial with success prob. $p$ \\
+\hline
+\shortstack{\textbf{Binomial} \\ \Bin($n, p$)} & \shortstack{$P(X=k) = \binom{n}{k} p^k(1-p)^{n-k}$  \\ $k \in \{0, 1, 2, \dots n\}$}& $np$ & $npq$ & Sum of $n$ iid Bern($p$) \\
+\hline
+\shortstack{\textbf{Geometric} \\ \Geom($p$)} & \shortstack{$P(X=k) = q^kp$  \\ $k \in \{0, 1, 2, \dots \}$}& $\frac{q}{p}$ & $\frac{q}{p^2}$ & \shortstack{\# of failures till success of indep. \\ trials with success prob $p$ \\ * Memoryless Property} \\
+\hline
+\shortstack{\textbf{First Success} \\ $\FS(p)$} & \shortstack{$P(X=k) = q^{k-1}p$  \\ $k \in \{1, 2, 3, \dots \}$}& $\frac{1}{p}$ & $\frac{q}{p^2}$ & \Geom(p) + 1\\
+\hline
+\shortstack{\textbf{Negative Binomial} \\ \NBin($r, p$)} & \shortstack{$P(X=n) = \binom{n+r-1}{r}p^rq^n$ \\ $n \in \{0, 1, 2, \dots \}$} & $r\frac{q}{p}$ & $r\frac{q}{p^2}$ &  Sum of $r$ iid Geom($p$)\\
+\hline
+\shortstack{\textbf{Hypergeometric} \\ \HGeom($w, b, n$)} & \shortstack{$P(X=k) = \frac{{\binom{w}{k}}{\binom{b}{n-k}}}{{\binom{w +b}{n}}}$ \\ $k \in \{0, 1, 2, \dots \}$} & $n\frac{w}{b+w}$ & & \shortstack{$w$ desired objects, $b$ undesired objects \\ $n$ samples w/o replacement} \\
+\hline
+\shortstack{\textbf{Poisson} \\ \Pois($\lambda$)} & \shortstack{$P(X=k) = \frac{e^{-\lambda}\lambda^k}{k!}$ \\ $k \in \{0, 1, 2, \dots \}$} & $\lambda$ & $\lambda$ & \shortstack{Rare events occurring with rate $\lambda$ \\ *Remember Chicekn-Egg Story} \\
+\end{tabular}
+\end{center}
+
+\item[Continous Distributions] .
+
+\noindent \begin{center}
+\begin{tabular}{cccccc}
+\textbf{Distribution} & \textbf{PDF and Support} & \textbf{E(X)}  & \textbf{Variance}  &\textbf{Story}\\ \hline
+\shortstack{\textbf{Uniform} \\ $\Unif(a, b)$} & \shortstack{$f(x) = \frac{1}{b-a}$ \\ $x \in [a, b]$} & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ & By UoU, $F_X(X)$ \\ \hline
+\shortstack{\textbf{Normal} \\ $\Norm(\mu, \sigma^2)$} & \shortstack{$f(x) = \frac{1}{\sigma \sqrt{2\pi}} \exp{-\frac{(x - \mu)^2}{2 \sigma^2}}$ \\ $x \in \R$} & $\mu$ & $\sigma^2$ & Central Limit Theorem \\ \hline
+\shortstack{\textbf{Exponential} \\ $\Expo(\lambda)$} & \shortstack{$f(x) = \lambda e^{-\lambda x}$ \\ $x \geq 0$} & $1/\lambda$ & $1/\lambda^2$ & Memoryless Property \\ \hline
+\end{tabular}
+\end{center}
+
+\end{description}
+\end{landscape}
+
+\section{Exponential Distribution}
+\begin{description}
+\item $X \sim \Expo(\lambda)$. Then:
+\begin{description}
+	\item[Story] You're sitting on an open meadow right before the break of dawn. You know that shooting stars come on average every 15 minutes, but it's never true that a shooting star is ever "due" to come because you've waited so long. Your waiting time is memorylessness, which means that the time until the next shooting star comes does not depend on how long you've waited already.
+	
+	\item[Example] The waiting time until the next shooting star is distributed $\Expo(4)$. The 4 here is $\lambda$, or the rate parameter, or how many shooting stars we expect to see in a unit of time. The expected time until the next shooting star is $\frac{1}{\lambda}$, or $\frac{1}{4}$ of an hour. You can expect to wait 15 minutes until the next shooting star (which should make intuitive sense if we expect to see 4 shooting stars per hour).
+	
+	\item[All Exponentials are Scaled Versions of Each Other]
+		$$Y \sim \Expo(\lambda) \rightarrow X = \lambda Y \sim \Expo(1)$$
+	 
+	\item[PDF and CDF] The PDF and CDF of a Exponential is:
+        \begin{eqnarray*}
+        f(x) = \lambda e^{-\lambda x},
+        \hspace{.1 in}
+        x \in [0, \infty)
+        \hspace{1 in}
+        F(x) = P(X \leq x) = 1 - e^{-\lambda x},
+        \hspace{.1 in}
+        x \in [0, \infty)
+        \end{eqnarray*}
+	
+	\item[Memorylessness] The Exponential Distribution is the sole continuous memoryless distribution. This means that it's always ``as good as new", which means that the probability of it failing in the next infinitesimal time period is the same as any infinitesimal time period. This means that for an exponentially distributed $X$ and any real numbers $t$ and $s$,
+	$$P(X > s + t | X > s) = P(X > t)$$
+	Given that you've waited already at least $s$ minutes, the probability of having to wait an additional $t$ minutes is the same as the probability that you have to wait more than $t$ minutes to begin with. Here's another formulation.
+	$$X - a | X > a \sim \Expo(\lambda)$$
+	
+ 	\Biohazard This does \textit{not} mean that $X - a \sim \Expo(\lambda)$. It cannot possibly be, since the support then can be negative. 
+ 	
+	Here are two consequences of the memoryless property.
+	\begin{enumerate}
+		\item If waiting for the bus is distributed exponentially with $\lambda = 6$, no matter how long you've waited so far, the expected additional waiting time until the bus arrives is always $\frac{1}{6}$, or 10 minutes. The distribution of time from now to the arrival is always the same, no matter how long you've waited.
+		\item The instantaneous failure rate $\left(\frac{f(x)}{1-F(x)}\right)$, or hazard function, is constant (try to think of the hazard function in terms of a conditional probability). That is, if the lifetime of a light bulb is distributed exponentially, the instantaneous rate of failure is always the same - the lightbulb will always have the same probability of failing in the next infinitesimal time unit for the duration of its lifetime. This is unlike real life light bulbs, whose failure rates grow as they grow older or my printer, which fails when I most need it.
+	\end{enumerate}
+	
+	In fact, there are only one discrete and only one continuous memoryless distribution. The discrete is geometric (or linear functional of geometric), and continuous is exponential (or linear functional of exponential) 
+	
+	\pagebreak
+	
+	\item [Poisson Process] A Poisson process with rate parameter $\lambda$ in continuous time is a stochastic (time-dependent) process in which:
+	\begin{itemize}
+	    \item Number of arrivals that occur in interval of length $t$ is distributed $\Pois(\lambda t)$ random variable
+	    \item Number of arrivals in disjoint intervals are independent.
+	\end{itemize}
+    Imagine back to the bus arrival process we discussed for Poisson r.v.s. From the definition of Poisson process, we know that $N_t$ the number of buses that will arrive in $t$ hours (if $\lambda$ is buses per hour) is distributed $\Pois(\lambda t)$. But now consider $T_1$, as the amount of time before the first bus arrives. Then, we claim that $$\text{event } T_1 > t \text{ is equal to event } N_t = 0 $$ which should makes sense (if it doesn't, ask!) Hence, $$ \Pr[T_1 > t] = \Pr[N_t = 0] = e^{-\lambda t} $$ which implies $T_1 \sim \Expo(\lambda)$. In fact, by using second property of Poisson process, we know that for any $n$, $T_n - T_{n-1} \sim \Expo(\lambda)$.
+    
+    \item [Minimum of Exponentials] If $Y_i \sim \Expo(\lambda_i)$ and are \underline{independent}, then what is the distribution of $L = \min(Y_1, \ldots, Y_n)$? $$ P(L > t) = P( Y_1 > t, Y_2 > t, \ldots, Y_n> t) = \prod_{i=1}^n \exp{-\lambda_i t} = \exp{- \left(\sum_{i=1}^n \lambda_i\right) t} $$ which means $L \sim \Expo(\sum_{i=1}^n \lambda_i)$. 
+    
+\end{description}
+\end{description}
+
+\section{Moments and MGF}
+\begin{description}
+\item[Purpose] $k$th moment of $X$ is $\E{X^k}$. Just be aware that such moments may not exist (since the summation/integral may diverge). 
+
+\item[Central moment] $k$th central moment of $X$ is $\E{(X-\mu)^k}$. You see that variance is second central moment. 
+
+\item[Standardized moment] $k$th standardized moment of $X$ is $\E{(\frac{X-\mu}{\sigma})^k}$. Skewness is defined as the third standardized moment (supposed to show asymmetry of distribution).
+
+\item[Moment Generating Functions (MGFs)]
+
+    \begin{description}
+    \item [Definition] For any random variable $X$, MGF of $X$ is defined as: $$ M_X(t) = \E{e^{tX}} $$ for a dummy variable $t$, if it exists for a finitely-sized interval centered around 0. Note that the MGF is just a function of a dummy variable $t$.
+    
+    \item [The ``Moment-Generating'' part] It is called the Moment Generating Function, because the $k^{\text{th}}$ derivative of the moment generating function evaluated 0 is the $k^{\text{th}}$ moment of $X$! $$\E{X^k} = M_X^{(k)}(0)$$ This is true by Taylor Expansion of $e^{tX}$ and linearity of expectation:
+	$$M_X(t) = \E{e^{tX}} = \sum_{k=0}^\infty \frac{\E{X^k}t^k}{k!} $$
+	Or by differentiation under the integral sign and then plugging in $t=0$
+	\begin{align*}
+		M_X^{(k)}(t) &= \frac{d^k}{dt^k}\E{e^{tX}} = \E{\frac{d^k}{dt^k}e^{tX}} = \E{X^ke^{tX}} \\
+		M_X^{(k)}(0) &= \E{X^ke^{0X}} = \E{X^k}
+	\end{align*}
+	
+	\item [MGF of linear transformation] If we have $Y = aX + c$, then $$M_Y(t) = \E{e^{t(aX + c)}} =  e^{ct} \E{e^{(at)X}} = e^{ct}M_X(at)$$
+	
+	\item [Uniqueness] \emph{If it exists, the MGF uniquely defines the distribution}. This means that for any two random variables $X$ and $Y$, they are distributed the same (their CDFs/PDFs are equal) if and only if their MGF's are equal. \footnote{This is highly nontrivial to prove, and it turns out it is much easier to prove a similar statement for characteristic function, which is a complex function $\E{e^{itX}}$} You can use this to prove distribution results from MGFs!
+	
+	\item [MGF of Sum of Independent r.v.s] If $X$ and $Y$ are independent, then
+	\begin{align*}
+		M_{(X+Y)}(t) &= E(e^{t(X + Y)}) = E(e^{tX}e^{tY}) = E(e^{tX})E(e^{tY}) = M_X(t) \cdot M_Y(t) \\
+		M_{(X+Y)}(t) &= M_X(t) \cdot M_Y(t)
+	\end{align*}
+	The MGF of the sum of two independent r.v.s is the product of the MGFs of those two random variables.
+	
+	\begin{example}
+	MGF of $Z \sim \Norm(0,1)$ is $$M_Z(t) = \int_{-\infty}^{\infty} e^{tz} \frac{1}{\sqrt{2\pi}} e^{-z^2/2} \dd{z} = e^{t^2/2} \int_{-\infty}^{\infty} \frac{1}{\sqrt{2\pi}} e^{-(z-t)^2/2} \dd{z} = e^{t^2/2}$$ This type of using normalization to derive MGFs and other moments are very common, so keep this example in mind! Using this, we get that MGF of $X \sim \Norm(\mu, \sigma^2)$ is  $$e^{\mu t} M_Z(\sigma t) = \exp{\mu t + \frac{1}{2} \sigma^2 t^2}$$ If $X_1 \sim \Norm(\mu_1, \sigma_1^2), X_2 \sim \Norm(\mu_2, \sigma_2^2)$ and $X_1,X_2$ are independent, then using the result above, $$M_{X_1+X_2}(t) = \exp{\mu_1 t + \frac{1}{2} \sigma_1^2 t^2} \exp{\mu_2 t + \frac{1}{2} \sigma_2^2 t^2} = \exp{(\mu_1+\mu_2) t + \frac{1}{2} (\sigma_1^2 + \sigma_2^2) t^2} $$ which, by uniqueness of MGF, tells us that $X_1+X_2 \sim \Norm(\mu_1 + \mu_2, \sigma_1^2+\sigma_2^2)$.
+	\end{example}
+	
+    \end{description}
+
+\end{description}
+
+\pagebreak
+
+\section{Practice Problems}
+
+\begin{prob} \textbf{(Memoryless Property)} 
+\begin{enumerate}[label = (\alph*)]
+    \item Let $X_1, X_2$ be independent with $X_i \sim \Expo(\lambda_i)$. Find $\E{X_1 + X_2 | X_1 > 1, X_2 > 2}$ in terms of $\lambda_1, \lambda_2$.
+    
+    % \vspace{1.5 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{By linearity, and then by independence of $X_1,X_2$, this is equal to $\E{X_1|X_1>1}+\E{X_2|X_2>2}$ By memoryless property, this is equal to $$1 + \E{X_1} + 2 + \E{X_2} = 3 + 1/\lambda_1 + 1/\lambda_2 $$}}
+
+    \item Find the conditional distribution of $L = \min(X_1,X_2)$ given $X_1 > 1, X_2 > 2$. 
+
+    % \vspace{3 in}
+
+    \fbox{\parbox{0.9 \textwidth}{This problem is a bit complicated, since our CDF depends on $t$. For $t \in [1,2]$, we know that $$\Pr[ L \leq t |X_1>1,X_2>2] = \Pr[ X_1 \leq t | X_1 > 1] = \Pr[X_1 \leq t-1] = 1 - \exp{-\lambda_1 (t-1)}$$ since $X_2$ is guaranteed to be greater than 2. 
+    
+    For $t > 2$,
+    \begin{align*}
+        \Pr[ L \leq t |X_1>1,X_2>2] & = 1 - \Pr[ X_1>t,X_2>t |X_1 > 1, X_2 > 2 ] \\
+        & = 1 - \Pr[ X_1 > t | X_1 > 1 ] \Pr[ X_2 > t | X_2 > 2 ] \\
+        & = 1 - \Pr[ X_1 > t-1 ] \Pr[ X_2 > t-2 ] \\
+        & = 1 - \exp{ -\lambda_1(t-1) - \lambda_2(t-2)} 
+    \end{align*}
+    
+    For $t<1$, the probability is zero.
+    
+    Hence, $$F_L(t)|X_1>1,X_2>2 = \begin{cases} 1 - \exp{-\lambda_1 (t-1)} & t \in [1,2] \\ 1 - \exp{ -\lambda_1(t-1) - \lambda_2(t-2)} & t > 2 \\ 0 &\text{otherwise}\end{cases}$$
+    
+    Conditional CDF is also a valid CDF, so this should go to zero as $t \to - \infty$, to one as $t \to \infty$, and be increasing. Since this is a continuous r.v., the conditional CDF (given that the conditions do not discretize our r.v.s) should also be continuous, which it is.}}
+
+\end{enumerate}
+\end{prob}
+
+\pagebreak
+
+\begin{prob} \textbf{(Lifetime of Light Bulbs)}
+There are two light bulbs in a box. The lifetime of the two light bulbs $X_1$ and $X_2$ are independent where $X_i \sim \Expo(\lambda_i)$.
+
+\begin{enumerate}[label = (\alph*)] 
+	\item You use light bulb 1 (which has the lifetime of $X_1$) and you observe that it lasts through  time $t$. Given this information, what is the probability it will last through an additional time $s$?
+	
+% 	\vspace{ 0.5 in }
+	
+	\fbox{\parbox{0.9 \textwidth}{By memoryless property, this is just the same as $\Pr[X_1 > s] = \exp{-\lambda_1 s}$.}}
+	
+	\item Let's instead say you observe the light bulb to last through time $t$ but you no longer know which light bulb you are using! You do know, however, that you somehow selected light bulb 1 with probability $0<p<1$ and light bulb 2 with probability $1-p$. Given this information, what is the probability that you chose light bulb 1? Probability that the light bulb you chose will last through additional time $s$? From this result, determine if the distribution of the lifetime of this unknown bulb is memoryless.
+
+    % \vspace{ 3 in }
+	
+	\fbox{\parbox{0.9 \textwidth}{Let us call the event that we chose light bulb 1 to be $A$, and the lifetime of unknown bulb to be $T$. Then, by Bayes and LOTP ,
+	\begin{align*}
+	    \Pr[A|T>t] & = \frac{\Pr[T>t|A]\Pr[A]}{\Pr[T>t|A]\Pr[A] + \Pr[T>t|A^c]\Pr[A^c]} \\
+	    & = \frac{p \exp{-\lambda_1 t}}{p \exp{-\lambda_1 t} + (1-p) \exp{-\lambda_2 t}}
+	\end{align*}
+	Now, using this result, we calculate using conditional LOTP and memoryless property,
+	\begin{align*}
+	    \Pr[T>t+s|T>t] & = \Pr[T>t+s|T>t,A] \Pr[A|T>t] + \Pr[T>t+s|T>t,A^c] \Pr[A^c|T>t] \\
+	    & = \Pr[X_1 > s ] \Pr[A|T>t] + \Pr[X_2 > s] (1-\Pr[A|T>t]) \\
+	    & = \frac{\exp{-\lambda_1 s} \cdot p \exp{-\lambda_1 t} + \exp{-\lambda_2 s} \cdot (1-p) \exp{-\lambda_2 t} }{p \exp{-\lambda_1 t} + (1-p) \exp{-\lambda_2 t}} \\
+	    & = \frac{p \exp{-\lambda_1 (t+s)} + (1-p) \exp{-\lambda_2 (t+s)}}{p \exp{-\lambda_1 t} + (1-p) \exp{-\lambda_2 t}}
+	\end{align*}
+	Since this is a function of both $t$ and $s$, this tells us that the distribution of $T$ is not memoryless. Checking some extreme cases, we see that if $p=0$ or $p=1$, then this is indeed memoryless (as one might expect)}}
+	
+\end{enumerate}
+\end{prob} 
+
+\pagebreak
+
+\begin{prob} \textbf{(Memoryless Post Office)}
+William goes to a post office and sees two clerks serving customers. One clerk is serving Alice and other is serving Bob. No one else is here, so William is at the front of the line and will be served by whichever clerk is free first. Let's say that the time it takes a clerk to serve one customer is $\Expo(1)$ and is independent of the time it takes to serve any other customer. 
+\begin{enumerate}[label = (\alph*)]
+    \item What is the probability that William will be the last one to be done being served?
+    
+    % \vspace{1.5 in}
+    
+    \fbox{\parbox{0.9 \textwidth}{WLOG assume that Alice leaves first. Then, the distribution of Bob's additional waiting time conditional on Alice's leaving time, is still $\Expo(1)$ by memoryless property. Since William's additional waiting time is the same, the probability is $1/2$.}}
+    
+    \item What is the expected amount of time William will spend at the post office?
+    
+    \fbox{\parbox{0.9 \textwidth}{The time William has to wait is the time that he has to wait either for Alice or for Bob to leave, and then his processing time. The expectation of the former is $1/2$, since it is expectation of minimum of 2 $\Expo(1)$, which is distributed $\Expo(2)$. Expectation of latter is 1, so in total, he has to wait $3/2$ (unit of time).}}
+ 
+    \vspace{1.5 in} 
+\end{enumerate}
+\end{prob}
+
+\begin{prob} \textbf{(MGF uniquely determines distribution)}
+Given that $X$ has MGF $$M_X(t) = \frac{1}{6} e^{-2t} + \frac{1}{3}e^{-t} + \frac{1}{12} + \frac{1}{4} e^{t} + \frac{1}{6} e^{2t} $$ find $\Pr[\abs{X}\leq 1]$.
+
+\medskip
+
+\fbox{\parbox{0.9 \textwidth}{This is just an MGF of a discrete r.v. that takes on value of $(-2,-1,0,1,2)$ with probability \\  
+$(1/6,1/3,1/12,1/4,1/6)$. We know that is the case since MGF is unique per distribution, and such discrete distribution's MGF is exactly this by LOTUS. Hence, $\Pr[\abs{X} \leq 1] = 1/3+1/12+1/4 = 2/3$.}}
+
+\end{prob}
+
+% \pagebreak
+
+% \begin{prob} \textbf{(Poisson MGFs and Convolutions)}
+% \begin{enumerate}[label = (\alph*)]
+%  	\item For $X \sim \Pois(\lambda_1)$, determine the MGF of $X$, $\E{e^{tX}}$.
+ 	
+% %  	\vspace{1.5 in}
+ 	
+%  	\fbox{\parbox{0.9 \textwidth}{Using LOTUS, we get \begin{align*}
+%  	    M_X(t) & = \sum_{k=0}^{\infty} e^{tk} \frac{\lambda_1^k e^{-\lambda_1}}{k!} \\
+%  	    & = \sum_{k=0}^{\infty} \frac{(e^t \lambda_1)^k e^{-\lambda_1}}{k!} \\
+%  	    & = e^{-\lambda_1}e^{e^t \lambda_1} \underbrace{\sum_{k=0}^{\infty} \frac{(e^t \lambda_1)^k e^{-e^t \lambda_1}}{k!}}_{\Pois(e^t \lambda_1) \implies = 1} \\
+%  	    & = \exp{(e^t-1)\lambda_1}
+%  	\end{align*}}}
+ 	
+% 	\item Let's say $Y\sim \Pois(\lambda_2)$ and is independent of $X$. Determine the MGF of $X+Y$ and therefore show that $X+Y \sim \Pois(\lambda_1 + \lambda_2)$.
+	
+% % 	\vspace{1.5 in}
+	
+% 	\fbox{\parbox{0.9 \textwidth}{MGFs of independent sums just multiply, so using the previous result, we get: $$M_{X+Y} = \exp{(e^t-1)\lambda_1} \exp{(e^t-1)\lambda_2} = \exp{(e^t-1)(\lambda_1+\lambda_2)}$$ This is an MGF of $\Pois(\lambda_1+\lambda_2)$, proving our statement.}}
+	
+% 	\item Let's say $Y\sim \Pois(\lambda_2)$, independent of $X$. Determine the MGF of $X+2Y$. Does this also yield the MGF of a Poisson RV? What if $\lambda_1 = \lambda_2$?
+	
+% % 	\vspace{1.5 in}
+	
+% 	\fbox{\parbox{0.9 \textwidth}{Note that the MGF of $2X$ is $M_X(2t)$. Hence, $$M_{2X+Y} = \exp{(e^{2t}-1)\lambda_1 + \exp{(e^t-1)\lambda_2}}$$ which is not a MGF of a Poisson. Even if $\lambda_1 =\lambda_2$, it still doesn't give us a MGF of a Poisson. }}
+	
+% \end{enumerate}
+% \end{prob}
+
+
+
+\end{document}

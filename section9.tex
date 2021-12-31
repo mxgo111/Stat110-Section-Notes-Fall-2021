@@ -1,0 +1,406 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1 in, letterpaper]{geometry}
+\usepackage{fontspec, graphicx, amsmath, amssymb, amsthm, array, physics, enumitem, cancel, multicol, float, bm}
+\usepackage[dvipsnames]{xcolor}
+
+\setmainfont{Linux Libertine O}
+\setsansfont{Linux Biolinum O}
+\setmonofont{Latin Modern Mono}
+\setmathrm{Latin Modern Math}
+\theoremstyle{definition}
+\newtheorem{theo}{\color{Maroon} Theorem}[section] 
+\newtheorem{defin}[theo]{\color{Maroon} Definition}
+\newtheorem{example}[theo]{\color{Maroon} Example}
+\newtheorem{prob}[theo]{\color{Maroon} Problem}
+% \newtheorem{example}[section]{\color{Maroon} Example}
+\usepackage{lscape}
+\theoremstyle{remark}
+\newtheorem*{soln}{\color{Maroon} Solution}
+\usepackage{latexsym, marvosym}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%%%%%%%%%%%%%%%%%%% Statistics %%%%%%%%%%%%%%%%%%%%
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left[ #1 \right]}
+% \newcommand{\cov}[2]{\textnormal{Cov}\left[ #1, #2 \right]}
+% \renewcommand{\var}[1]{\textnormal{Var}\left[ #1 \right]}
+\renewcommand{\var}{\textnormal{Var}}
+\newcommand{\cov}{\textnormal{Cov}}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\Bin}{\textnormal{Bin}}
+\newcommand{\Beta}{\textnormal{Beta}}
+\newcommand{\Bern}{\textnormal{Bern}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\FS}{\textnormal{FS}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\DUnif}{\textnormal{DUnif}}
+\newcommand{\Pois}{\textnormal{Pois}}
+\newcommand{\NBin}{\textnormal{NBin}}
+\newcommand{\HGeom}{\textnormal{HGeom}}
+\newcommand{\Gam}{\textnormal{Gamma}}
+\newcommand{\Mult}{\textrm{Mult}}
+\newcommand{\iidsim}{\overset{\text{iid}}{\sim}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttitle}{Section 09}
+\newcommand{\insertauthor}{Max Guo \& Seung Hwan An}
+\newcommand{\insertcourse}{STAT 110}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\thepage}
+\fancyhead[L]{\inserttitle}
+\fancyhead[R]{\insertauthor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+{\noindent\Huge\bf  \\[0.1\baselineskip] {\inserttitle }}\\[2\baselineskip]
+{{\bf \insertcourse}\\ {\textit{November 15, 2021}}} \hfill {\large \textsc{\insertauthor}}
+\smallskip
+
+\hfill \noindent \textit{Credits to Dhruv Mohnot and Claire Shi}
+
+
+\section{Continuous Transformations}
+\begin{description}
+	\item[Why do we need the Jacobian?] We need the Jacobian to rescale our PDF so that it integrates to 1.
+	\item[One Variable Transformations] Let's say that we have a random variable $X$ with PDF $f_X(x)$, but we are also interested in some function of $X$. We call this function $Y = g(X)$. Note that $Y$ is a random variable as well. If $g$ is differentiable and one-to-one (every value of $X$ gets mapped to a unique value of $Y$), then the following is true:
+	\[f_Y(y) = f_X(x)\left|\frac{dx}{dy}\right| \textnormal{ or } f_Y(y) \left|\frac{dy}{dx}\right|= f_X(x)\]
+	To find $f_Y(y)$ as a function of $y$, plug in $x = g^{-1}(y)$.
+	\[f_Y(y) = f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|\]
+	The derivative of the inverse transformation is referred to the \textbf{Jacobian}, denoted as $J$.
+	\[J = \frac{d}{dy}g^{-1}(y)\]
+	\item[Two Variable Transformations] Similarily, let's say we know the joint distribution of $U$ and $V$ but are also interested in the random vector $(X, Y)$ found by $(X, Y) = g(U, V)$. If $g$ is differentiable and one-to-one, then the following is true:
+	\[f_{X,Y}(x, y) = f_{U,V}(u,v) \left|\left| \frac{\delta(u, v)}{\delta(x, y)} \right|\right| = f_{U,V}(u,v)\left| \left| 
+	\begin{array}{ccc}
+		\frac{\delta u}{\delta x} & \frac{\delta u}{\delta y} \\
+		\frac{\delta v}{\delta x} & \frac{\delta v}{\delta y} 
+	\end{array}
+	\right| \right| \textnormal{ or } f_{X,Y}(x, y) \left|\left| \frac{\delta(x, y)}{\delta(u, v)} \right|\right| = f_{U,V}(u,v) 
+	\]
+	The outer $||$ signs around our matrix tells us to take the absolute value. The inner $||$ signs tells us to the matrix's determinant. Thus the two pairs of $||$ signs tell us to take the absolute value of the determinant matrix of partial derivatives. In a 2x2 matrix, 
+	\[ \left| \left|
+	\begin{array}{ccc}
+		a & b \\
+		c & d
+	\end{array}
+	\right| \right| = |ad - bc|\]
+	The determinant of the matrix of partial derivatives is referred to the \textbf{Jacobian}, denoted as $J$.
+	\[\left| \begin{array}{ccc}
+		\frac{\delta u}{\delta x} & \frac{\delta u}{\delta y} \\
+		\frac{\delta v}{\delta x} & \frac{\delta v}{\delta y} 
+	\end{array}\right| = J\]
+
+\end{description}
+
+\section{Gamma Function}
+\begin{description}
+\item[The Letter Gamma] - $\Gamma$ is the (capital) roman letter Gamma. It is used in statistics for both the Gamma function and the Gamma Distribution.
+\item[Recursive Definition] - The Gamma function is an extension of the factorial function to all real (and complex) numbers that are not nonpositive integers, with the argument shifted down by 1. When $n$ is a positive integer, 
+	\[\Gamma(n) = (n-1)!\]
+For all values of $n$ for which $\Gamma$ is defined:
+	\[\Gamma(n + 1) = n\Gamma(n)\]
+\item[Closed-form Definition] - The Gamma function is defined as:
+	\[\Gamma(n) = \int_0^\infty t^{n-1}e^{-t}dt\]
+%\item[Example Values]
+\end{description}
+%	\begin{center}
+%		\begin{tabular}{lll}
+%			$\Gamma(1) = 0! = 1$ & $\Gamma(2) = 1! = 1$ & $\Gamma(3) = 2! = 2$ \\
+%			$\Gamma(\frac{1}{2}) = \sqrt{\pi}$ & $\Gamma(\frac{3}{2}) = \frac{\pi}{2}$  & $\Gamma(\frac{5}{2}) = \frac{3\sqrt{\pi}}{4}$ \\
+%		\end{tabular}
+%	\end{center}
+
+\section{Gamma Distribution (Continuous)}
+\begin{description}
+\item Let us say that $X$ is distributed $\Gam(a, \lambda)$. We know the following:
+\begin{description}
+	\item[Story] You sit waiting for shooting stars, and you know that the waiting time for a star is distributed $\Expo(\lambda)$. You want to see ``$a$" shooting stars before you go home. $X$ is the total waiting time for the $a$th shooting star.
+	\item[Example]	You are at a bank, and there are 3 people ahead of you. The serving time for each person is distributed Exponentially with mean of 2 time units. The distribution of your waiting time until you begin service is $\Gam(3, \frac{1}{2})$
+	\item[PDF] The PDF of a Gamma is:
+\begin{eqnarray*}
+f(x) = \frac{1}{\Gamma(a)}(\lambda x)^ae^{-\lambda x}\frac{1}{x},
+\hspace{.1 in}
+x \in [0, \infty)
+\end{eqnarray*}
+	\item[Properties and Representations]
+\end{description}
+\end{description}
+\vspace{-.4 cm}
+	\begin{eqnarray*}
+		E(X) = \frac{a}{\lambda} && Var(X) = \frac{a}{\lambda^2} \\
+		X \sim \Gam(a, \lambda), \hspace{.2 cm} Y \sim \Gam(b, \lambda), \hspace{.2 cm} X \independent Y \hspace{.2 cm} &\longrightarrow& \hspace{.5cm} X + Y \sim \Gam(a + b, \lambda), \hspace{.3cm} \frac{X}{X + Y} \independent X + Y \\
+		X \sim \Gam(a, \lambda) &\longrightarrow& X = X_1 + X_2 + ... X_a \textnormal{ for $X_i$ i.i.d. $\Expo(\lambda)$} \\
+		\Gam(1, \lambda) &\sim& \Expo(\lambda) 
+	\end{eqnarray*}
+
+\pagebreak
+
+\section{Beta Distribution (Continuous)}
+\begin{description}
+\item Let us say that $X$ is distributed $\Beta(a, b)$. We know the following:
+\begin{description}
+	\item[Story (Bank/Post-Office)] Let's say that your waiting time at the bank is distributed $X \sim \Gam(a, \lambda)$ and that your total waiting time at the post-office is distributed $Y \sim \Gam(b, \lambda)$. You visit both of them while doing errands. Your total waiting time at both is $X + Y \sim \Gam(a + b, \lambda)$ and the fraction of your time that you spend waiting at the Bank is $\frac{X}{X+Y} \sim \Beta(a, b)$. The fraction is not dependent on $\lambda$, and $\frac{X}{X+Y} \independent X + Y$.
+	\item[Example] You are tasked with finding Jules, Vernes, and Nemo in a friendly game of hide and seek. You look for them in order, and the time it takes to find one of them is distributed Exponentially with a mean of $\frac{1}{3}$ of a time unit. The time it takes to find both Jules and Vernes is $\Expo(3) + \Expo(3) \sim \Gam(2, 3)$. The time it takes to find Nemo is $\Expo(3) \sim \Gam(1, 3)$. Thus the proportion of the total hide-and-seek time that you spend finding Nemo is distributed $\Beta(1, 2)$ and is independent from the total time that you've spent playing the game.
+	\item[PDF] The PDF of a Beta is:
+		\begin{eqnarray*}
+		f(x) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1},
+		\hspace{.1 in}
+		x \in (0, 1)
+		\end{eqnarray*}
+	\item[Properties and Representations]
+\end{description}
+\end{description}
+\vspace{-.4 cm}
+	\begin{eqnarray*}
+		E(X) &=& \frac{a}{a + b} \\
+		X \sim \Gam(a, \lambda), \hspace{.3cm} Y \sim \Gam(b, \lambda), \hspace{.3cm} X\independent Y \hspace{.3cm} &\longrightarrow& \hspace{.3cm} \frac{X}{X + Y} \sim \Beta(a, b), \hspace{.3cm} \frac{X}{X + Y} \independent X + Y \\
+		\Beta(1, 1) &\sim& \Unif(0, 1)
+	\end{eqnarray*}
+
+
+\section{Order Statistics}
+\begin{description}
+	\item[Definition] - Let's say you have $n$ i.i.d. random variables $X_1, X_2, X_3, \dots X_n$. If you arrange them from smallest to largest, the $i$th element in that list is the $i$th order statistic, denoted $X_{(i)}$. $X_{(1)}$ is the smallest out of the set of random variables, and $X_{(n)}$ is the largest.
+	\item[Properties] - The order statistics are dependent random variables. The smallest value in a set of random variables will always vary and itself has a distribution. For any value of $X_{(i)}$, $X_{(i+1)} \geq X_{(j)}$.
+	\item[Distribution] - Taking $n$ i.i.d. random variables $X_1, X_2, X_3, \dots X_n$ with CDF $F(x)$ and PDF $f(x)$, the CDF and PDF of $X_{(i)}$ are as follows:
+	\begin{align*}
+		F_{X_{(i)}}(x) &= P (X_{(j)} \leq x) = \sum_{k=i}^n {n \choose k} F(x)^k(1 - F(x))^{n - k} \\
+		f_{X_{(i)}}(x) &= n{n - 1 \choose i - 1}F(x)^{i-1}(1 - F(X))^{n-i}f(x)
+	\end{align*}
+	\item[Universality of the Uniform] - We can also express the distribution of the order statistics of $n$  i.i.d. random variables $X_1, X_2, X_3, \dots X_n$ in terms of the order statistics of $n$ uniforms. We have that
+	\[F(X_{(j)}) \sim U_{(j)}\]
+\end{description}
+
+\pagebreak
+
+\section{Notable Uses of the Beta Distribution}
+\begin{description}
+	\item[\dots as the Order Statistics of the Uniform] -  The smallest of three Uniforms is distributed $U_{(1)} \sim \Beta(1, 3)$. The middle of three Uniforms is distributed $U_{(2)} \sim \Beta(2, 2)$, and the largest $U_{(3)} \sim \Beta(3, 1)$. The distribution of the the $j^{th}$ order statistic of $n$ i.i.d Uniforms is:
+	\begin{align*}
+		U_{(j)} &\sim \Beta(j, n - j + 1) \\
+		f_{U_{(j)}}(u) &= \frac{n!}{(j-1)!(n-j)!}t^{j-1}(1-t)^{n-j}
+	\end{align*}
+	
+	
+	\item[\dots as the Conjugate Prior of the Binomial] - A prior is the distribution of a parameter before you observe any data ($f(x)$). A posterior is the distribution of a parameter after you observe data $y$ ($f(x|y)$). Beta is the \emph{conjugate} prior of the Binomial because if you have a Beta-distributed prior on $p$ (the parameter of the Binomial), then the posterior distribution on $p$ given observed data is also Beta-distributed. This means, that in a two-level model:
+	\begin{align*}
+		X|p &\sim \Bin(n, p) \\
+		p &\sim \Beta(a, b)
+	\end{align*}
+Then after observing the value $X = x$, we get a posterior distribution $p|(X=x) \sim \Beta(a + x, b + n - x)$
+\end{description}
+
+%NOTE - THIS IS ALSO PRESENT IN THE NEXT SECTION. IF YOU UPDATE THIS ONE, PLEASE UPDATE THE NEXT ONE TOO
+
+% \section*{Conditional Expectation}
+% \begin{description}
+% 	\item[Conditioning on an Event] - We can find the expected value of $Y$ given that event $A$ or $X=x$ has occurred. This would be finding the values of $E(Y|A)$ and $E(Y|X = x)$. Note that conditioning in an event results in a $number$. Note the similarities between regularly finding expectation and finding the conditional expectation. 
+% 		\begin{table}[htb!]
+% 		   \centering
+% 		ÊÊÊÊ\begin{tabular}{ccc}
+% 			\toprule
+% 		ÊÊÊÊÊÊÊÊ ~& \textbf{Discrete Y} & \textbf{Continuous Y} \\
+% 			\midrule
+% 		ÊÊÊÊÊÊÊÊ Conditional & $E(Y|A) = \sum_y yP(Y=y|A)$ & $E(Y|A) = \int_{-\infty}^\infty yf(y|A)dy$ \\ 
+% 		ÊÊÊÊÊÊÊÊ ~ & $E(Y|X=x) = \sum_y yP(Y=y|X=x)$ & $E(Y|X=x) =\int_{-\infty}^\infty yf_{Y|X}(y|x)dy$ \\
+% 			\midrule
+% 			Regular & $E(Y) = \sum_y yP(Y=y)$ & $E(Y) =\int_{-\infty}^\infty yf_Y(y)dy$ \\
+
+% 			\bottomrule
+% 		ÊÊÊÊ\end{tabular}
+% 		\end{table}
+% 	\vspace{-.45 cm}
+% 	\item[Conditioning on a Random Variable] - We can also find the expected value of $Y$ given the random variable $X$. The resulting expectation, $E(Y|X)$ is \emph{not a number but a function of the random variable X}. For an easy way to find $E(Y|X)$, find $E(Y|X = x)$ and then plug in $X$ for all $x$. This changes the conditional expectation of $Y$ from a function of a number $x$, to a function of the random variable $X$.
+	
+% \end{description}
+	
+\section{Bank and Post Office Result}
+Let us say that we have $X \sim \Gam(a, \lambda)$ and $Y \sim \Gam(b, \lambda)$, and that $X \independent Y$. By Bank-Post Office result, we have that:
+\begin{align*}
+	X + Y &\sim \Gam(a + b, \lambda)\\
+	\frac{X}{X + Y} &\sim \Beta(a, b)\\
+	X + Y &\independent \frac{X}{X + Y}
+\end{align*}
+\section{Special Cases of Beta and Gamma}
+\[\Gam(1, \lambda) \sim \Expo(\lambda) \hspace{1 cm} \Beta(1, 1) \sim \Unif(0, 1)\]
+
+\pagebreak
+
+\section{Conditional Expectation}
+\begin{description}
+	\item[Conditioning on an Event] - We can find the expected value of $Y$ given that event $A$ or $X=x$ has occurred. This would be finding the values of $E(Y|A)$ and $E(Y|X = x)$. Note that conditioning in an event results in a $number$. Note the similarities between regularly finding expectation and finding the conditional expectation. The expected value of a dice roll given that it is prime is $\frac{1}{3}2 + \frac{1}{3}3 + \frac{1}{3}5 = 3\frac{1}{3}$. The expected amount of time that you have to wait until the shuttle comes (assuming that the waiting time is $\sim \Expo(\frac{1}{10})$) given that you have already waited $n$ minutes, is 10 more minutes by the memoryless property.
+		\begin{table}[htb!]
+		   \centering
+			\begin{tabular}{ccc}
+			\hline
+				 ~& \textbf{Discrete Y} & \textbf{Continuous Y} \\
+			\hline
+				 Conditional & $E(Y|A) = \sum_y yP(Y=y|A)$ & $E(Y|A) = \int_{-\infty}^\infty yf(y|A)dy$ \\ 
+				 ~ & $E(Y|X=x) = \sum_y yP(Y=y|X=x)$ & $E(Y|X=x) =\int_{-\infty}^\infty yf_{Y|X}(y|x)dy$ \\
+			\hline
+			Regular & $E(Y) = \sum_y yP(Y=y)$ & $E(Y) =\int_{-\infty}^\infty yf_Y(y)dy$ \\
+ 
+			\hline
+			\end{tabular}
+		\end{table}
+	\vspace{-.45 cm}
+	\item[Conditioning on a Random Variable] - We can also find the expected value of $Y$ given the random variable $X$. The resulting expectation, $E(Y|X)$ is \emph{not a number but a function of the random variable X}. For an easy way to find $E(Y|X)$, find $E(Y|X = x)$ and then plug in $X$ for all $x$. This changes the conditional expectation of $Y$ from a function of a number $x$, to a function of the random variable $X$.
+	\item[Properties of Conditioning on Random Variables] \quad
+	\begin{enumerate}
+		\item $E(Y|X) = E(Y)$ if $X \independent Y$
+		\item $E(h(X)|X) = h(X)$ (taking out what's known). \\
+			$E(h(X)W|X) = h(X)E(W|X)$
+		\item $E(E(Y|X)) = E(Y)$ (\textbf{Adam's Law}, aka Law of Iterated Expectation of Law of Total Expectation)
+	\end{enumerate}
+
+	\item[Law of Total Expectation] - For any set of events that partition the sample space, $A_1, A_2, \dots, A_n$ or just simply $A, A^c$, the following holds:
+	\begin{align*}
+		E(Y) &= E(Y|A)P(A) + E(Y|A^c)P(A^c) \\
+		E(Y) &= E(Y|A_1)P(A_1) + E(Y|A_2)P(A_2) + \dots + E(Y|A_n)P(A_n)
+	\end{align*}
+\end{description}
+\section{Conditional Variance}
+\begin{description}
+	\item[Eve's Law] (aka Law of Total Variance) \quad
+	\[\var(Y) = E(\var(Y|X)) + \var(E(Y|X))\]
+\end{description}
+
+\pagebreak
+\section{Named and Famed Distributions}
+\subsection*{Discrete Distributions}
+\begin{center}
+% \renewcommand{\arraystretch}{3}
+\begin{tabular}{cccccc}
+\textbf{Distribution} & \textbf{PDF and Support} & \textbf{EV}  & \textbf{Var} & \textbf{MGF}\\
+\hline
+\shortstack{Bernoulli \\ \Bern($p$)} & \shortstack{$P(X=1) = p$ \\$ P(X=0) = q$} & $p$ & $pq$ & $q + pe^t$ \\
+\hline
+\shortstack{Binomial \\ \Bin($n, p$)} & \shortstack{$P(X=k) = {n \choose k}p^k(1-p)^{n-k}$  \\ $k \in \{0, 1, 2, \dots n\}$}& $np$ & $npq$ & $(q + pe^t)^n$ \\
+\hline
+\shortstack{Geometric \\ \Geom($p$)} & \shortstack{$P(X=k) = q^kp$  \\ $k \in \{$0, 1, 2, \dots $\}$}& $\frac{q}{p}$ & $\frac{q}{p^2}$ & $\frac{p}{1-qe^t}, qe^t < 1$\\
+\hline
+\shortstack{Negative Binomial \\ \NBin($r, p$)} & \shortstack{$P(X=n) = {n+r - 1 \choose r -1}p^rq^n$ \\ $n \in \{$0, 1, 2, \dots $\}$} & $r\frac{q}{p}$ & $r\frac{q}{p^2}$ &  $(\frac{p}{1-qe^t})^r, qe^t < 1$\\
+\hline
+\shortstack{Hypergeometric \\ \HGeom($w, b, n$)} & \shortstack{$P(X=k) = \frac{{w \choose k}{b \choose n-k}}{{w + b \choose n}}$ \\ $k \in \{$0, 1, 2, \dots $\}$} & $n\frac{w}{b+w}$ &&  \\
+\hline
+\shortstack{Poisson \\ \Pois($\lambda$)} & \shortstack{$P(X=k) = \frac{e^{-\lambda}\lambda^k}{k!}$ \\ $k \in \{$0, 1, 2, \dots $\}$} & $\lambda$ & $\lambda$ & $e^{\lambda(e^t-1)}$ \\
+\hline
+\shortstack{Multinomial \\ \Mult$_k(n, \vec{p}$)} & \shortstack{$P(\vec{X} = \vec{n}) = {n \choose n_1n_2\dots n_k}p_1^{n_1}\dots p_k^{n_k}$ \\ $n = n_1 + n_2 + \dots + n_k$} & $n\vec{p}$ & \shortstack{$\var(X_i) = np_i(1-p_i)$ \\ $\cov(X_i, X_j) = -np_ip_j$} &  \\
+
+\end{tabular}
+\end{center}\subsection*{Continuous Distributions}
+\begin{center}
+\renewcommand{\arraystretch}{3}
+\begin{tabular}{cccccc}
+\textbf{Distribution} & \textbf{PDF and Support} & \textbf{EV}  & \textbf{Var}  & \textbf{MGF}\\
+\hline
+
+\shortstack{Uniform \\ \Unif($a, b$)} & \shortstack{$ f(x) = \frac{1}{b-a}, x \in [a, b] $ \\$ f(x) = 0, x \notin [a, b]$} & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ &  $\frac{e^{tb}-e^{ta}}{t(b-a)}$\\
+\hline
+\shortstack{Normal \\ $\N(\mu, \sigma^2)$} & \shortstack{$f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}$ \\ $x \in (-\infty, \infty)$} & $\mu$  & $\sigma^2$ & $e^{t\mu + \frac{\sigma^2t^2}{2}}$\\
+\hline
+\shortstack{Exponential \\ $\Expo(\lambda)$} & \shortstack{$f(x) = \lambda e^{-\lambda x}, x \in [0, \infty)$\\$ f(x) = 0, x \notin [0, \infty)$} & $\frac{1}{\lambda}$  & $\frac{1}{\lambda^2}$ & $\frac{\lambda}{\lambda - t}, t < \lambda$\\
+\hline
+\shortstack{Multivariate Uniform \\ A is area of support} & \shortstack{$f(x) = \frac{1}{A}, x \in A$\\$ f(x) = 0, x \notin A $} & $$  & ~ & $$\\
+\hline
+\shortstack{Gamma \\ $\Gam(a, \lambda)$} & \shortstack{$f(x) = \frac{1}{\Gamma(a)}(\lambda x)^ae^{-\lambda x}\frac{1}{x}$\\$ x \in [0, \infty)$} & $\frac{a}{\lambda}$  & $\frac{a}{\lambda^2}$ & $\left(\frac{\lambda}{\lambda - t}\right)^a, t < \lambda$\\
+\hline
+\shortstack{Beta \\ \Beta(a, b)} & \shortstack{$f(x) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{b-1}$\\$x \in [0, 1] $} & $\mu = \frac{a}{a + b}$  & $\frac{\mu(1-\mu)}{a + b + 1}$ & $\text{omitted}$ \\
+\hline
+
+\end{tabular}
+\end{center}
+
+
+\section{Practice Problems}
+
+\begin{prob}[BH 8.6] Find the PDFs of $U^2$ and $\sqrt{U}$. What named distribution do each of these follow? Could you have figured this out using UoU?
+\end{prob}
+
+\vspace{4 in}
+
+% \fbox{\parbox{0.9 \textwidth}{ 
+% PDF of $U^2$: Let $Y = U^2$ for $0 < u < 1$, and $y = u^2$ so $u = \sqrt{y}$. The absolute Jacobian determinant is:
+% \[\bigg|\frac{du}{dy}\bigg| = \bigg|\frac{1}{2\sqrt{y}}\bigg| = \frac{1}{2\sqrt{y}}\]
+% for $0 < y < 1$. The PDF of $Y$ is 
+% \[f_{Y}(y) = f_{U}(u)\bigg|\frac{du}{dy}\bigg| = \frac{1}{2\sqrt{y}}\]
+% for $0 < y < 1$ and $0$ otherwise. This is the $\Beta(0.5, 1)$ PDF, so $Y = U^2 \sim \Beta(0.5, 1)$.\\
+
+% PDF of $\sqrt{U}$: Now let $Y = U^{1/2}$ for $0 < u < 1$, and $y = u^{1/2}$ so $u = y^2$. The absolute Jacobian determinant is 
+% \[\bigg|\frac{du}{dy}\bigg| = |2y| = 2y\] for $0<y<1$. The PDF of $Y$ is 
+% \[f_{Y}(y) = f_{U}(u)\bigg|\frac{du}{dy}\bigg| = 2y\]
+% for $0 < y < 1$ and $0$ otherwise. This is the $\Beta(2,1)$ PDF. In general, the same method shows that $U^{1/\alpha} \sim \Beta(\alpha, 1)$ for any $\alpha > 0$.
+
+% Note that we could figure this out using UoU as well! By UoU, $U^{1/\alpha}$ has CDF function $F(x)=x^{\alpha}$ and thus PDF $\alpha x^{\alpha -1}$, which is the PDF of $\Beta(\alpha,1)$. 
+% }}
+
+
+\begin{prob}[BH 8.32] Fred waits $X \sim \Gam(a,\lambda)$ minutes for the bus to go to work, and then waits $Y \sim \Gam(b,\lambda)$ for the bus going home, with $X$ and $Y$ independent.  Is the ratio $\frac{X}{Y}$ independent of the total wait time $X + Y$?
+\end{prob}
+
+% \fbox{\parbox{0.9 \textwidth}{ 
+% As shown in the bank-post office story, $W = \frac{X}{X+Y}$ is independent of $X+Y$. So any function of $W$ is independent of any function of $X+Y$. We can see that $X/Y$ is a function of $W$, since
+% \[\frac{X}{Y} = \frac{\frac{X}{X+Y}}{\frac{Y}{X+Y}} = \frac{W}{1-W}\]
+% so it follows that $X/Y$ is independent of $X+Y$.
+% }}
+
+
+\pagebreak
+
+\begin{prob}[BH 8.41]
+Let $X \sim \Bin(n,p)$ and $B \sim \Beta(j, n-j + 1)$, where $n$ is a positive integer and $j$ is a positive integer such that $j \leq n$. Show using a story about order statistics that 
+\[P(X \geq j) = P(B \leq p)\]
+This shows that the CDF of the continuous r.v. $B$ is closely related to the CDF of the discrete r.v. $X$, and reveals another connection between the Beta and Binomial. 
+\end{prob}
+
+\vspace{2 in}
+
+% \fbox{\parbox{0.9 \textwidth}{ 
+% Let $U_1 \dots U_n$ be i.i.d. $\Unif(0,1)$. Think of these as Bernoulli trials, where $U_j$ is  defined to be ”successful” if $U_j \leq p$. So the probability of success is $p$ for  each  trial.   Let $X$ be the number of successes. Then $X \geq j$ is the same event as $U_{(j)} \leq p$, so
+
+% $$P(X \geq j) = P(B \leq p) $$
+% }}
+
+\begin{prob}
+Recall the chicken and the egg problem: there are $N \sim \Pois(\lambda)$ eggs, of which $X|N \sim \Bin(N,p)$ hatch and $Y = N - X$ don't hatch. 
+\begin{enumerate} \itemsep .2in
+	\item Use conditional expectation to find $E(X)$ and $\var(X)$. Does the answer match with what you know about $X$ from the chicken-egg story?
+
+    \vspace{2 in}
+	
+% 	\fbox{\parbox{0.9 \textwidth}{ 
+% 	We know that $E(X|N) = Np$ and so by Adam’s Law, we have that
+% 	$$E(X) = E(E(X|N)) = E(pN) = \lambda p$$
+% 	Similarly, since $\var(X|N) = Npq$ and $\var(N) = \lambda$, by Eve's law we have:
+% 	$$\var(X) = E(\var(X|N)) + \var(E(X|N)) = pqE(N) + p^2\var(N) = (p-p^2)\lambda + p^2\lambda = \lambda p $$
+	
+% 	We know that $X \sim \Pois(\lambda p)$, and the answer matches up with this.}}
+	
+	\item Find $E(N|X)$ and then $E(NX)$.
+	
+% 	\fbox{\parbox{0.9 \textwidth}{ 
+% 	By chicken-egg, we have that $X \independent Y$ . Therefore, it follows that $E(Y|X) = E(Y) = \lambda q$. Thus
+	
+% 	$$E(N|X) = E(X+Y|X) = X + E(Y|X) = X + E(Y) = X + \lambda q$$
+	
+% 	Similarly, since $E(NX) = \cov(N,X) + E(N)E(X)$ and $\cov(N,X) = \cov(X+Y,X) = \var(X) = \lambda p$, we have
+	
+% 	$$E(NX) = \cov(N,X) + E(N)E(X) = \lambda p + \lambda \lambda p = \lambda(1+\lambda)p $$}}
+	
+\end{enumerate}
+\end{prob}
+
+\end{document}

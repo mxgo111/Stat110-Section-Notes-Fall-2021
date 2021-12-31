@@ -1,0 +1,429 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1 in, letterpaper]{geometry}
+\usepackage{fontspec, graphicx, amsmath, amssymb, amsthm, array, physics, enumitem, cancel, multicol, float, dsfont}
+\usepackage{latexsym, marvosym}
+\usepackage[dvipsnames]{xcolor}
+
+\setmainfont{Linux Libertine O}
+\setsansfont{Linux Biolinum O}
+\setmonofont{Latin Modern Mono}
+\setmathrm{Latin Modern Math}
+\theoremstyle{definition}
+\newtheorem{theo}{\color{Maroon} Theorem}[section] 
+\newtheorem{defin}[theo]{\color{Maroon} Definition}
+\newtheorem{example}[theo]{\color{Maroon} Example}
+\newtheorem{prob}[theo]{\color{Maroon} Problem}
+% \newtheorem{example}[section]{\color{Maroon} Example}
+
+\theoremstyle{remark}
+\newtheorem*{soln}{\color{Maroon} Solution}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Bin}{\text{Bin}}
+\newcommand{\Bern}{\text{Bern}}
+
+%%%%%%%%%%%%%%%%%%% Statistics %%%%%%%%%%%%%%%%%%%%
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left[ #1 \right]}
+\newcommand{\cov}[2]{\textnormal{Cov}\left[ #1, #2 \right]}
+\renewcommand{\var}[1]{\textnormal{Var}\left[ #1 \right]}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\ind}[1]{\mathds{1}_{#1}} 
+\newcommand{\NBin}{\textnormal{NBin}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\FS}{\textnormal{FS}}
+\newcommand{\HGeom}{\textnormal{HGeom}}
+\newcommand{\Pois}{\textnormal{Pois}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\Beta}{\textnormal{Beta}}
+\newcommand{\Gam}{\textnormal{Gamma}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttitle}{Section 03}
+\newcommand{\insertauthor}{Max Guo \& Seung Hwan An}
+\newcommand{\insertcourse}{STAT 110}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\thepage}
+\fancyhead[L]{\inserttitle}
+\fancyhead[R]{\insertauthor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+{\noindent\Huge\bf  \\[0.1\baselineskip] {\inserttitle }}\\[2\baselineskip]
+{{\bf \insertcourse}\\ {\textit{September 27, 2021}}} \hfill {\large \textsc{\insertauthor}}
+\smallskip
+
+\hfill \noindent \textit{Credits to William Chen and Sebastian Chiu}
+
+
+\section{Random Variables are the Bread and Butter of Statistics}
+\begin{description}
+	\item[Formal Definition] - A random variable X is a \emph{function} mapping the sample space $S$ into the real line.
+	
+	\Biohazard Note that random variable is \textit{NOT} an event. It would be a categorical error to talk about $P(X)$.
+	
+	\item[Descriptive Definition] - A random variable takes on a numerical summary of an experiment. The randomness comes from the the randomness of what outcome occurs. Each outcome has a certain probability. A discrete random variable may only take on a finite (or countably infinite) number of values. Random variables are often denoted by capital letters, usually $X$ and $Y$.
+	%\item[Events] - An event is a set of outcomes of an experiment. These events are usually denoted by capital letters, oftentimes ${\bf A}$ or ${\bf B}$. The event ``occurs" if any of the outcomes in the event are reached
+	\item[Example] - Let's have $X$ take on the number from a dice roll. So $\textbf{X=1}$ (this is an event) with probability $1/6$ and $\textbf{X=2}$ (this is also an event) with probability $1/6$ and so on. In this case, $X$ is our \emph{discrete random variable} and  $X=1$, $X=2$, and so on are our \emph{events}. In notational form, we can write $P(X=1) = 1/6$, which means that the probability that $X$ takes on the value of $1$ is $1/6$. Here is the \textbf{distribution} of $X$: 
+
+\[
+X =
+ \begin{cases}
+   1 & \text{with probability }\frac{1}{6} \\
+   2 & \text{with probability }\frac{1}{6} \\
+... \\
+   6 & \text{with probability }\frac{1}{6}
+  \end{cases}
+\]
+
+If we wanted to look at the event \emph{The outcome of a dice roll is even}, we would look at the set $\{$$X=2$, $X=4$, $X=6$$\}$. \emph{This set is also an an event}. If we roll a dice and its outcome is 2 (or 4, or 6), then our event has occurred. 
+
+	\item[Other Examples] - Let's say you now roll 2 die. Here are more possible random variables you can define: \\ Your sample space is $S = \{(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (2, 1), \dots, (6, 5), (6, 6)\}$ (for a total of 36 possible outcomes, or 21 if order does't matter)
+	\begin{itemize}
+		\item X = Sum of two dice rolls (maps sample space to $\{2, 3, \dots, 12\}$)
+		\item X = Maximum of two dice rolls (maps sample space to $\{1, 2, \dots, 6\}$)
+		\item X = Absolute Difference of dice rolls (maps sample space to $\{0, 1, \dots, 5\}$)
+		\item X = Product of dice rolls (maps sample space to $\{1, 2, 3, 4, 5, 6, 8, 9, \dots, 36\}$)
+		\item X = Number of dice rolls that are prime (maps sample space to $\{0, 1, 2\}$)
+		\item X = Number of dice you rolled (maps sample space to $\{2\}$) This r.v. is degenerate as there is no randomness.
+		\item X = Twice the square of the maximum of your two dice rolls (maps sample space to $\{2, 8, \dots, 72\}$). Functions of random variables are also random variables.
+	\end{itemize}
+	
+	\item[Random Variables Expressing Events] - Let's say that $X$ is the random variable expressing the sum of two dice rolls. $\{X = 7\}$ is the event that your dice summed to 7, and $\{X \leq 7\}$ is the event that your dice summed to at most 7. $\{X = 2, X = 3, X = 5, X = 7, X = 11\}$ is also an event (the event that $X$ is prime), and so is $\{X = 2, X=9\}$.
+	
+	\Biohazard As we noted in the past, when solving a problem, it is important to \textit{denote all relevant random variables and events}!
+
+\end{description}
+
+\section{Conditioning is the Soul of Statistics (Review)}
+
+LOTP with ${\bf B}$ and ${\bf B^c}$ (special case of a partitioning set), and with Extra Conditioning (just add C!)
+   \begin{align*} 
+P({\bf A}) &= P({\bf A} | {\bf B})P({\bf B}) + P({\bf A} | {\bf B^c})P({\bf B^c}) \\
+P({\bf A}) &= P({\bf A} \cap {\bf B})+ P({\bf A} \cap {\bf B^c}) \\
+P({\bf A} | {\bf C}) &= P({\bf A} | {\bf B}, {\bf C})P({\bf B} | {\bf C}) + P({\bf A} | {\bf B^c}, {\bf C})P({\bf B^c} | {\bf C}) \\
+P({\bf A} | {\bf C}) &= P({\bf A} \cap {\bf B} | {\bf C})+ P({\bf A} \cap {\bf B^c} | {\bf C})
+   \end{align*} 
+
+\noindent
+LOTP with a partitioning ${\bf B}_0, {\bf B}_1, {\bf B}_2, {\bf B}_3, \dots, {\bf B}_n$, and applied to random variables ${\bf X}$, ${\bf Y}$.
+\begin{align*} 
+P({\bf A}) &= \sum_{i=0}^n P({\bf A} | {\bf B}_i)P({\bf B}_i) \\
+P({\bf Y}=y) &= \sum_{k}P({\bf Y}=y|{\bf X}=k)P({\bf X}=k)
+   \end{align*} 
+Bayes' Rule, and with Extra Conditioning (just add C!)
+	\begin{align*}
+		 P({\bf A}|{\bf B}) &= \frac{P({\bf A} \cap {\bf B})}{P({\bf B})} = \frac{P({\bf B}|{\bf A})P({\bf A})}{P({\bf B})} \\
+		 P({\bf A}|{\bf B}, {\bf C}) &= \frac{P({\bf A} \cap {\bf B} | {\bf C})}{P({\bf B} | {\bf C})} = \frac{P({\bf B}|{\bf A}, {\bf C})P({\bf A} | {\bf C})}{P({\bf B} | {\bf C})} 
+	\end{align*}
+	
+\section{PMF, CDF, and Independence}
+\begin{description}
+
+\item[Probability Mass Function (PMF)] (Discrete Only): probability that a r.v. takes on the value $x$.
+\begin{center}
+$P_X(x) = P(X=x)$
+\end{center}
+
+
+\item[Cumulative Distribution Function (CDF)]: probability that a r.v. takes on the value $\leq x$
+\[F_X(x_0) = P(X \leq x_0)\]
+
+\item[Independence] - Intuitively, two random variables are independent if knowing one gives you no information about the other. X and Y are independent if for ALL values of x and y:  \begin{center}
+$P(X=x, Y=y) = P(X = x)P(Y = y)$
+\end{center}
+
+\item[IID] Abbreviation i.i.d. will be used for collection of r.v.'s that are independent and identically distributed (has the same distribution).
+
+\end{description}
+
+\section{Simpson's Paradox}
+\textbf{Simpson's Paradox} says that X can be more successful than Y when compared within every group (Surgery Types, etc.), but still Y can be more successful than X when compared in the aggregate. This result is caused by a lurking variable, the groups, who 1) have a large impact on the success rate and 2) whose relative sizes are very different between X and Y. In statistical language, you can have that:
+\begin{align*}
+	P(A|B, C) < P(A|B^c, C) \hskip 0.8cm \textnormal{and}  \hskip 0.8cm P(A|B, C^c) < P(A|B^c, C^c)  \hskip 0.8cm \textnormal{but} \hskip 0.8cm P(A|B) > P(A|B^c)
+\end{align*}
+where A is success, B is one of the things that you are comparing (e.g. Doctors), and C is one of the groups (e.g. Surgery Types).
+
+Here is an example: take a look at these two players' batting averages from year 1995 and 1996.
+    \begin{table}[!h]
+        \centering
+        \begin{tabular}{|c|c|c|c|} \hline
+            Player & 1995 & 1996 & Combined \\  \hline \hline
+            Derek Jeter & .250 & .314 & $P(A)$ \\ \hline
+            David Justice & .253 & .321 & $P(B)$ \\ \hline
+        \end{tabular}
+    \end{table}
+    Would you expect $$P(A) \geq P(B) \quad \text{ or } \quad P(B) \geq P(A)?$$ It turns out that the combined batting average was higher for Jeter.
+    \begin{table}[!h]
+        \centering
+        \begin{tabular}{|c|c|c|c|} \hline
+            Player & 1995 & 1996 & Combined \\  \hline \hline
+            Derek Jeter & .250 (12/48) &  .314 (183/582) & .310 (195/630) \\ \hline
+            David Justice & .253 (104/411)  & .321 (45/140) & .270 (149/551) \\ \hline
+        \end{tabular}
+    \end{table}
+    
+    What this tells you is that \begin{align*}
+        P(A|Y=1995) &< P(A|Y=1995) \\
+        P(A|Y=1996) &< P(B|Y=1996) \\
+        \text{BUT} \quad P(A) &> P(B)
+    \end{align*}
+
+\section{Gambler's Ruin}
+
+
+\textbf{Problem Statement} - Gamblers A and B have a series of bets, and they bet \$1 with each other until one of them is bankrupt. A starts with $\$i$ and B starts with $\$(N-i)$. $p$ is the probability that A wins a bet, and $q=1-p$ is the probability that B wins the bet. We wish to find $P_i$, which is the probability that A wins this game given that A starts with $\$i$. \\
+
+We start off this problem by conditioning on the first step. If A wins the first bet, then the probability that A wins is $P_{i+1}$, and if A loses the first bet, then the probability that A wins is $P_{i-1}$. We know the boundary conditions are $P_0 = 0$ and $P_N = 1$. Thus we have the following recursive difference equation found using the Law of Total Probability (or first step analysis):
+
+\[P_i = pP_{i+1} + qP_{i-1}\]
+
+\pagebreak
+
+We start off the difference equation with the natural guess that $P_i = x^i$ (default difference equations guess that will usually work). We can now plug in $P_i = x^i$.
+
+\[0 = px^{i+1} - x^i + qx^{i-1}\]
+
+The Right Hand Side of this equation is known as the characteristic polynomial. Assuming that $x \neq 0$, we can cancel out $x^{i-1}$ and get:
+
+\[0 = px^2 - x + q\]
+
+ The two roots of this polynomial are
+
+\begin{align*}
+\alpha_1 = \frac{1 + \sqrt{1 - 4p(1-p)}}{2p} \hskip 1cm & \hskip 1cm \alpha_2 =  \frac{1 - \sqrt{1 - 4p(1-p)}}{2p} \\
+\alpha_1 = 1 \hskip 1cm & \hskip 1cm \alpha_2 =  \frac{q}{p}
+\end{align*}
+
+Thus we know that our characteristic polynomial is of the form:
+
+\[P_i = c_1\alpha_1^i + c_2\alpha_2^i = c_11^i + c_2\left(\frac{q}{p}\right)^i\]
+
+We plug in $P_0 = 0$ and $P_N = 1$ to solve for $c_1$ and $c_2$, and we get the general answer (where $p\neq q$).
+
+If $p = q$, then LOTP gives us that $P_i$ is an average of $P_{i+1}$ and $P_{i-1}$. This is possible for all $p$ if and only if $P_i$'s are linear in $i$ (try visualizing why this can't be true if $P_i$'s are \textit{not} linear in $i$). Hence the general to the solution to the gambler's ruin problem is:
+
+\textbf{Solution} - Starting at point $i$, say that the state of ruin is at $0$ and the state of success is at $N$. The gambler has a probability $p$ of moving up one step, and a corresponding probability $q = 1-p$ of moving down one step. The probability $P_i$ that the gambler reaches $N$ before $0$ starting at state $i$ is:
+
+$$P_i =
+\begin{cases}
+\frac{1 - \left(\frac{q}{p}\right)^i}{1 - \left(\frac{q}{p}\right)^N}, & \text{if }p \neq q \\
+\frac{i}{N}, & \text{if } p = q = \frac{1}{2}
+\end{cases}$$
+
+% \section{Solving Difference Equations}
+% \begin{enumerate}
+% 	\item Write out the difference equation, to express $P_i$ in terms of the neighboring $P_?$ by Law of Total Probability (first step analysis)
+% 	\item Guess $P_i = x^i$ to get the characteristic polynomial
+% 	\item Find the roots of the characteristic polynomial, $\alpha_1, \alpha_2, \dots, \alpha_k$
+% 	\item If the roots are distinct, the solution is of the form $P_i = c_1\alpha_1^i + c_2\alpha_2^i + \dots + c_k\alpha_k^i$. Plug in the boundary conditions to solve for $c_1, c_2, \dots, c_k$
+% \end{enumerate}
+
+\section{Distributions}
+
+A distribution describes the probability that a random variable takes on certain values. For an example of the distribution of a dice roll, check page 1 of this handout. Some distributions are commonly used in statistics because they can help model real life phenomena. We can use Binomial distributions to model the number of free throws that Jeremy Lin makes out of 10, or a Bernoulli distribution to model the occurrence of any event.
+
+The notation for a random variable $X$ having distribution $D$ (whether this is binomial or bernoulli), is $X \sim D$. We might also use the same notation to say that two random variables $X$ and $Y$ have the same distribution: $X \sim Y$.
+
+\pagebreak 
+
+\section{Bernoulli Distribution}
+
+\begin{description}
+\item[Bernoulli] The Bernoulli distribution is the simplest case of the Binomial distribution, where we only have one trial, or $n=1$. Let us say that X is distributed \Bern($p$). We know the following:
+\begin{description}
+	\item[Story.] $X$ ``succeeds" (is 1) with probability $p$, and $X$ ``fails" (is 0) with probability $1-p$.
+	\item[Example.] A fair coin flip is distributed \Bern($\frac{1}{2}$).
+	\item[PMF.] The probability mass function of a Bernoulli is:
+% \[P(X = x) = p^x(1-p)^{1-x}\]
+% or simply
+\[P(X = x) = \begin{cases} p, & x = 1 \\ 1-p, & x = 0 \end{cases}\]
+\end{description}
+
+\item[Indicator R.V.] An indicator random variable for event $A$ will be denoted $\ind{A}$, which takes on a value of $1$ if the event happens, and value of $0$ otherwise. Thus, $\ind{A} \sim \Bern(P(A))$. This is in general an incredibly useful r.v. in problem solving!
+
+\end{description}
+
+\section{Binomial Distribution}
+
+\begin{description}
+
+\item[Binomial] Let us say that $X$ is distributed \Bin($n,p$). We know the following:
+\begin{description}
+	\item[Story] $X$ is the number of ``successes" that we will achieve in $n$ independent trials, where each trial can be either a success or a failure, each with the same probability $p$ of success.
+	\item[Example] If Jeremy Lin makes 10 free throws and each one independently has a $\frac{3}{4}$ chance of getting in, then the number of free throws he makes is distributed  \Bin($10,\frac{3}{4}$), or, letting X be the number of free throws that he makes, X is a Binomial Random Variable distributed  \Bin($10,\frac{3}{4}$).
+	\item[PMF] The probability mass function of a Binomial is:
+\[P(X = x) = \binom{n}{x} p^x(1-p)^{n-x}\]
+% 	\item[Choose Function] ${n  \choose k}$ is the choose function and is read \emph{n choose k}, and means out of $n$ possible indistinguishable objects, how many ways can I possibly choose $k$ of them? The formula for choose is:
+% \[{n  \choose k} = \frac{n!}{k!(n-k)!}\]
+\end{description}
+\end{description}
+
+\section{Discrete Distributions}
+\begin{center}
+\renewcommand{\arraystretch}{3}
+\begin{tabular}{cccccc}
+\textbf{Distribution} & \textbf{Form} & \textbf{Support} & \textbf{PDF} & \textbf{Equivalent To}\\
+\hline
+Bernoulli & \Bern($p$) & $x \in \{0, 1\}$ &$\begin{cases} p, & x = 1 \\ 1-p, & x = 0 \end{cases}$ & $\Bin(1, p)$ \\
+Binomial & \Bin($n, p$) & $x \in \{0, 1, 2, \dots n \}$ & $\binom{n}{x} p^x(1-p)^{n-x}$ & Sum of iid Bernoullis \\
+\end{tabular}
+\end{center}
+
+\pagebreak
+
+\section{Practice Problems}
+
+\example \textbf{Properties of the Binomial.} 
+\begin{enumerate}
+        \item Suppose $X \sim \Bin(n_1, p)$ and independently $Y \sim \Bin(n_2, p)$. What is the distribution of $X+Y$? Explain.
+        
+        % \vspace{ 1.5 in }
+        
+        \fbox{\parbox{0.9 \textwidth}{
+        Intuitively, we can use a story argument to determine the distribution of $X + Y$. Let's say we have a coin that is heads with probability $p$. $X$ then is a random variable that takes on the distribution of the number of heads obtained if we flip the coin $n_1$ times and $Y$ is a random variable that takes on the distribution of the number of heads obtained if we flip the coin $n_2$ times. Note that $X$ and $Y$ are independent of each other. $X+Y$ thus is a random variable that represents the number of heads in $n_1 + n_2$ flips of the coin. Thus, it follows that $X + Y \sim \Bin(n_1 + n_2, p)$.
+        }}
+        
+        
+        \item What is $P(X\ge 2)$?
+        
+        % \vspace{ 1 in }
+        
+        \fbox{\parbox{0.9 \textwidth}{
+        Typically, when calculating probability statements, it is always useful to consider the complement of the event that we are calculating the probability of. That is, in this situation, we should see that $P(X \ge 2) = 1 - P(X = 0) - P(X = 1)$. It follows based on our understanding of the Binomial PMF that:
+        \[
+        P(X \ge 2) = 1 - P(X = 0) - P(X = 1) = 1 - (1-p)^{n_1} - np(1-p)^{n_1-1}
+        \]
+        }}
+
+        \item What is $P(X+Y = 10)$? Assume that $n_1 + n_2 \ge 10$.
+        
+        % \vspace{ 1 in }
+        
+        \fbox{\parbox{0.9 \textwidth}{
+        Using the result in part $a$ that $X + Y \sim \Bin(n_1 + n_2, p)$, we have that:
+        \[
+        P(X + Y = 10) = \binom{n_1 + n_2}{10} p^{10}(1 - p)^{n_1 + n_2 - 10}
+        \]
+        }}
+        
+        \item What is one reason why $X - Y$ cannot be Binomial?
+    
+        % \vspace{ 1 in }
+
+        \fbox{\parbox{0.9 \textwidth}{
+        $X - Y$ can go negative, and hence cannot be Binomial.
+        }}
+  
+        \item Can you construct two random variables X and Y both distributed \Bin($3, \frac{1}{2}$) such that $P(X=Y)=0$?
+        
+        \fbox{\parbox{0.9 \textwidth}{
+        Yes, let $Y = 3 - X$.
+        }}
+        
+        
+\end{enumerate}
+
+\newpage
+        
+\example \textbf{Simpson's Paradox.} Each decimal below represents the proportion of total income that is paid as tax, in all income brackets and in two different years.\footnote{Tax data from an article by C. H. Wagner, which appeared in The American Statistician journal (1982, Vol. 36, No. 1)}
+
+\begin{center}
+    \begin{tabular}{ccc}
+          \bf{Income Bracket} &  \bf{3 Years Ago} & \bf{Current} \\ \hline
+        Under \$5000 & 5.4\% & 3.5\% \\
+        \$5000 - \$10000 & 9.3\% & 7.2\% \\
+        \$10000 - \$14999 & 11.1\% & 10.0\% \\
+        \$15000 - \$99999 & 16.0\% & 15.9\% \\
+        \$100000 or more & 38.4\% & 38.3\% \\ \hline
+        \bf{Total} & 14.1\% & 15.2\% \\
+    \end{tabular}
+    \end{center}
+    
+\begin{enumerate} 
+       \item Another year comes and the government is under attack for too high taxes. What might the government say using this data to defend the tax levels?
+       
+    %   \vspace{1.5 in}
+
+        \fbox{\parbox{0.9 \textwidth}{
+        The government may point out that at each of the income brackets that are listed, the average proportion
+        of total income that is paid as tax decreased from Year 1 to Year 4. Therefore, he or she could make the
+        claim that tax rates at each income bracket have decreased.
+        }}
+       
+       \item What might a taxpayer say in opposition to the government's claims?
+       
+        % \vspace{ 1.5 in}
+
+        \fbox{\parbox{0.9 \textwidth}{
+        In opposition to the claim in part a, a taxpayer may point out that the last row of the data table establishes
+        that, from Year 1 to Year 4, the average tax rate paid among the entire population has increased from 0.141
+        to 0.152. Therefore, the argument could be made that the tax rate of the population as a whole has increased
+        over this time period.
+        }}
+
+       \item Are these two points of view contradictory? Give an explanation of why you believe this phenomenon is happening.
+       
+        \fbox{\parbox{0.9 \textwidth}{
+        In this case, in considering all possibilities, we can see that these two points of view are in fact not contradictory. Part a establishes that the tax rates at each individual income bracket have decreased, while part
+        b establishes that the tax rate among the entire population has increased.\\
+        
+        \noindent
+        Note that this population appears to be under a progressive taxing scheme (such that individuals with higher incomes pay higher effective tax rates than individuals with lower incomes). Furthermore, our data table gives no information as to how many individuals or what proportion of the population falls in each income
+        bracket in either of our time periods. One plausible explanation then could be that from Year 1 to Year 4,
+        the average total income in the population increased such that many individuals now fall in higher income brackets. Noticing that individuals with higher incomes pay a higher tax rate, on average, this would have the effect of increasing the average tax rate paid in the population, even if the tax rate at each income bracket is decreased to some degree.
+        }}
+
+\end{enumerate}
+
+\newpage
+
+\example \textbf{The Monty Hall Problem.} There are three doors, behind one of which there is a car and behind the other two of which there are goats. You want the car (hopefully). Initially, from your perspective, all possibilities are equally likely for where the car is. You choose a door, which we'll say is Door 1. Monty Hall opens a door with a goat in it, offers you the option of switching. In class, in the case that Monty Hall knows where the car is and would never reveal the car, the probability that the strategy of always switching succeeds is $2/3$. Find the probability that the strategy of always switching succeeds...:
+\begin{enumerate} 
+         \item ... If Monty Hall does not know what lies behind the doors and opens Door 2 at random that happens not to reveal the car.
+         
+        \fbox{\parbox{0.9 \textwidth}{
+        We can let $S$ be the event of success in getting the car, $C_i$ be the event that the car is behind Door $i$, and $O_i$ be the event that Monty opens Door $i$ and there is no car in it.\\
+        
+        \noindent
+        Note that $P(O_2) = P(\text{No car behind door 2})P(\text{Monty Hall chooses Door 2 over Door 3}) = (2/3)(1/2) = 1/3.$ By Bayes Rule, we have that:
+        \[
+        P(S | O_2) = \frac{P(O_2 | S)P(S)}{P(O_2)} = \frac{(1/2)(1/3)}{1/3} = 1/2.
+        \]
+        See that this result intuitively makes sense. If Monty Hall actually knows nothing about what is behind each of the doors and happens to reveal a goat by picking Door 2, then the fact that he picked Door 2 gives you no additional information about what is behind Door 3, the door that you would switch to if you were to switch. Therefore, the car is equally likely to be behind Door 1 and Door 3.
+        }}
+         
+         \item ... If Monty Hall always reveals a goat, and if he has a choice among the doors you didn't already pick, he always chooses the leftmost goat. In this case specifically, he has chosen to open Door 2. More specifically, he has chosen to open Door 2 knowing that you chose Door 1.
+         
+        \fbox{\parbox{0.9 \textwidth}{
+        Here, we have that $P(O_2) = P(\text{No car behind Door }2) = 2/3$. Thus, it follows that:
+        \[
+        P(S | O_2) = \frac{P(O_2 | S)P(S)}{P(O_2)} = \frac{1(1/3)}{2/3} = 1/2.
+        \]
+        }}         
+
+\end{enumerate}
+\vskip 0.5in
+
+\example \textbf{Coin Flipping.} Max flips a fair coin $n$ times and Sonny flips a fair coin $n+1$ times. What's the probability that Max flips fewer heads than Sonny does? 
+
+\fbox{\parbox{0.9 \textwidth}{
+Let $M$ be the number of heads Max flips and $S$ be the number of heads Sonny flips. We want to calculate $P(M < S)$. Since they are both flipping a fair coin, $M \sim \Bin(n, 1/2)$ and $S \sim \Bin(n + 1, 1/2)$. Note that $M \sim n - M$ by symmetry (that is, the random variable $M$ is distributed the same as the random variable $n - M$) and $S \sim n + 1 - S$. Therefore,
+\[
+P(M < S) = P(n - M < n + 1 - S) = P(S < M + 1) = P(S \le M).
+\]
+But note that $S \le M$ is the complement of the event $M < S$ (so $P(M < S) + P(S \le M) = 1$). So, if $P(M < S) = P(S \le M)$, then it follows that $P(M < S) = 1/2$.
+}}
+
+\end{document}

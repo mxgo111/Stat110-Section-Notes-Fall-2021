@@ -1,0 +1,352 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1 in, letterpaper]{geometry}
+\usepackage{fontspec, graphicx, amsmath, amssymb, amsthm, array, physics, enumitem, cancel, multicol, float, bm}
+\usepackage[dvipsnames]{xcolor}
+
+\setmainfont{Linux Libertine O}
+\setsansfont{Linux Biolinum O}
+\setmonofont{Latin Modern Mono}
+\setmathrm{Latin Modern Math}
+\theoremstyle{definition}
+\newtheorem{theo}{\color{Maroon} Theorem}
+\newtheorem{defin}[theo]{\color{Maroon} Definition}
+\newtheorem{example}[theo]{\color{Maroon} Example}
+\newtheorem{prob}[theo]{\color{Maroon} Problem}
+% \newtheorem{example}[section]{\color{Maroon} Example}
+\usepackage{lscape}
+\theoremstyle{remark}
+\newtheorem*{soln}{\color{Maroon} Solution}
+\usepackage{latexsym, marvosym}
+
+\newcommand{\convas}{\xrightarrow{\text{a.s.}}}
+\newcommand{\convprob}{\xrightarrow{\mathbb{P}}}
+\newcommand{\convdist}{\xrightarrow{d}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+%%%%%%%%%%%%%%%%%%% Statistics %%%%%%%%%%%%%%%%%%%%
+\newcommand{\E}[1]{\mathbb{E}\left[ #1 \right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left[ #1 \right]}
+\newcommand{\cov}[2]{\textnormal{Cov}\left[ #1, #2 \right]}
+\renewcommand{\var}[1]{\textnormal{Var}\left[ #1 \right]}
+% \renewcommand{\var}{\textnormal{Var}}
+% \newcommand{\cov}{\textnormal{Cov}}
+\newcommand{\Unif}{\textnormal{Unif}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\Bin}{\textnormal{Bin}}
+\newcommand{\Beta}{\textnormal{Beta}}
+\newcommand{\Bern}{\textnormal{Bern}}
+\newcommand{\Geom}{\textnormal{Geom}}
+\newcommand{\FS}{\textnormal{FS}}
+\newcommand{\Expo}{\textnormal{Expo}}
+\newcommand{\DUnif}{\textnormal{DUnif}}
+\newcommand{\Pois}{\textnormal{Pois}}
+\newcommand{\NBin}{\textnormal{NBin}}
+\newcommand{\HGeom}{\textnormal{HGeom}}
+\newcommand{\Gam}{\textnormal{Gamma}}
+\newcommand{\Mult}{\textrm{Mult}}
+\newcommand{\iidsim}{\overset{\text{iid}}{\sim}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\inserttitle}{2016 Finals Solution}
+\newcommand{\insertauthor}{Max Guo \& Seung Hwan An}
+\newcommand{\insertcourse}{STAT 110}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\thepage}
+\fancyhead[L]{\inserttitle}
+\fancyhead[R]{\insertauthor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+{\noindent\Huge\bf  \\[0.1\baselineskip] {\inserttitle }}\\[2\baselineskip]
+{{\bf \insertcourse}\\ {\textit{December 6, 2021}}} \hfill {\large \textsc{\insertauthor}}
+\smallskip
+
+\begin{prob} Two different diseases cause a certain weird symptom; anyone who has either or both
+of these diseases will experience the symptom. Let $D_1$ be the event of having the first
+disease, $D_2$ be the event of having the second disease, and $W$ be the event of having the
+weird symptom. Suppose that $D_1$ and $D_2$ are independent with $P(D_j) = p_j$ , and that a
+person with neither of these diseases will have the weird symptom with probability $w_0$. Let
+$q_j = 1 - p_j$, and assume that $0 < p_j < 1$.
+'
+\begin{enumerate}[label = (\alph*)]
+    \item Find $P(W)$. (Simplify.)
+    
+    \begin{soln} By LOTP, \begin{align*}
+        P(W) & = P(W|D_1 \cup D_2) P(D_1 \cup D_2) + P(W|(D_1 \cup D_2)^c) P((D_1 \cup D_2)^c) \\
+        & = 1 - P(D_1^c) P(D_2)^c + w_0 P(D_1^c) P(D_2)^c \\
+        & = 1 - q_1 q_2 + w_0 q_1 q_2 \\
+        & = 1 - (1-w_0) q_1 q_2
+    \end{align*}
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item Find $P(D_1|W)$ and $P(D_1,D_2 | W)$. (Simplify.)
+    
+    \begin{soln} By Bayes' rule, $$ P(D_1|W) = \frac{P(W|D_1) P(D_1)}{P(W)} = \frac{p_1}{1 - (1-w_0) q_1 q_2} $$ $$ P(D_1,D_2 | W) = \frac{P(W|D_1,D_2)P(D_1,D_2)}{P(W)} = \frac{p_1 p_2}{1 - (1-w_0) q_1 q_2} $$
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item Suppose for this part only that $w_0 = 0$. Are $D_1$ and $D_2$ conditionally independent given $W$? Give a clear, convincing intuitive explanation in words. 
+    
+    \begin{soln} Note that if $w_0=0$, then the event $W$ is the same as event $D_1 \cup D_2$. Hence, knowing $D_1$ does give you information about $D_2$, since if $D_1$ does not happen, then $D_2$ has \textit{certainly} happened.
+    
+    \end{soln}
+    
+\end{enumerate} 
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob} Let $X,Y,Z \sim \Bin(n,p)$ be i.i.d. Write the most appropriate of $\leq, \geq, = $, or $?$ in each blank.
+
+\begin{enumerate}[label = (\alph*)]
+    \item $P(X<Y<Z) \leq 1/6$. 
+    
+    \begin{soln} $P(X<Y<Z)$ would be equal to $1/3!=1/6$ if $X,Y,Z$ are i.i.d. \textit{continuous} random variable due to symmetry ($X,Y,Z$ are exchangeable r.v.s). Since there is a possibility of tie, this probability only goes down from $1/6$. Hence $P(X<Y<Z) < 1/6$.
+    \end{soln}
+    
+    \dotfill
+    
+    \item $P(X+Y+Z > n) \leq 3p$. 
+    
+    \begin{soln} By Markov inequality, $$P(X+Y+Z > n) \leq \frac{\E{X+Y+Z}}{n} = \frac{3np}{p} = 3p$$ 
+    \end{soln}
+    
+    \dotfill
+    
+    \item $P \left( \sum_{n=0}^{2016} \frac{(X^2+1)^n}{n!} > e^5 \right) \leq P( X > 2 )$.
+    
+    \begin{soln}
+    Note that $e^x = \sum_{n=0} x^n/n!$. Therefore $$ \sum_{n=0}^{2016} \frac{(X^2+1)^n}{n!} < e^{X^2+1} $$ Hence, $$ P \left( \sum_{n=0}^{2016} \frac{(X^2+1)^n}{n!} > e^5 \right) < P ( e^{X^2+1} > e^5 ) = P( X > 2 ) $$ 
+    \end{soln}
+    
+    \dotfill
+    
+    \item $\E{e^X} = (pe+1-p)^n$. 
+    
+    \begin{soln} We can represent $X = \sum_{j=1}^n I_j$ where $I_j \iidsim \Bern(p)$. Note that $E(e^X) = E(e^{I_1})^n$, and thus $E(e^{I_1}) = pe^1 + (1-p)e^0 = pe+1-p$. Hence $E(e^X) = (pe+1-p)^n$. 
+    \end{soln}
+    
+    \dotfill
+    
+    \item $\var{X+Y} \leq n/2$
+    
+    \begin{soln}
+    By independence of $X,Y$, $\var{X+Y} = 2\var{X} = 2p(1-p) \cdot n$. Note that $2p(1-p)$ is a quadratic, and thus achieves its maximum when $p=1/2$, and thus $2p(1-p) \leq 1/2$ (graph it if you want to check). Hence, $2p(1-p)n \leq 1/2$. Hence $\var{X+Y} \leq n/2$.
+    \end{soln}
+    
+    \dotfill
+    
+    \item $\E{X|X+Y = n} = n/2 $.
+    
+    \begin{soln} Note that $\E{X|X+Y} = \E{Y|X+Y}$ by exchangeability of $X,Y$. Therefore, \\ $\E{X|X+Y=n} = \frac{1}{2} \E{X+Y|X+Y=n} = n/2$.
+    \end{soln}
+    
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob} Joe will read $N \sim \Pois(\lambda)$ books next year. Each book has a $\Pois(\mu)$ number of pages, with book lengths independent of each other and independent of $N$.
+
+\begin{enumerate}[label = (\alph*)]
+    \item Find the expected number of book pages Joe will read next year.
+    
+    \begin{soln} Let $X_1, X_2, \ldots, X_N \iidsim \Pois(\mu)$ be the number of pages in the books. Then, denoting $X$ as the total number of book pages Joe reads, $X = \sum_{i=1}^N X_i$. Hence, by Adam's law $$ \E{X} = \E{\E{X|N}} = \E{N\E{X_1}} = \E{N \mu} = \mu \lambda $$
+    \end{soln}
+    
+    \dotfill
+    
+    \item Find the variance of the number of book pages Joe will read next year.
+    
+    \begin{soln} By Eve's law, $$ \var{X} = \E{\var{X|N}} + \var{\E{X|N}} = \E{N\mu} + \var{N\mu} = \mu \lambda + \mu^2 \lambda = \mu(\mu+1)\lambda$$
+    \end{soln}
+    
+    \dotfill
+    
+    \item For each of the $N$ books, Joe likes it with probability $p$ and dislikes it with probability $1-p$, independently. Find the conditional distribution of how many of the $N$ books Joe likes, given that he dislikes exactly $d$ of the books.
+    
+    \begin{soln} By the chicken-egg story, the number of books that Joe likes is distributed $\Pois(\lambda p)$, and it is independent of the number of books that Joe dislikes. Hence the conditional distribution is just $\Pois(\lambda p)$
+    
+    \end{soln}
+    
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob} A certain academic program has $n$ students enrolled. Each of these students takes the same two courses. The two courses meet in the same lecture hall, which has exactly $n$ seats. The courses have assigned seating. The seating assignment for each course is chosen completely randomly (with all possibilities equally likely), and the seating assignments for the two courses are independent of each other. Let $X$ be the number of students who have the same seat for both courses.
+
+\begin{enumerate}[label = (\alph*)]
+    \item Find $\E{X}$.
+    
+    \begin{soln} Let $I_i$ be the indicator r.v. for whether the $i$th student has the same seat for both courses. $\E{I_i} = 1/n$ since there are $n^2$ pairs of seats for a student, and only $n$ of them have the seating be equal.
+    
+    By linearity of expectation, $X = \sum_{i=1}^n I_i$, so $\E{X} = \sum_{i=1}^n \E{I_i} = n/n = 1$.
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item Find $\var{X}$.
+    
+    \begin{soln} Use the fact that $$ \var{X} = \sum_{i=1}^n \var{I_i} + \sum_{i \neq j}^n \cov{I_i}{I_j} = n \cdot \Big((1/n)(1-1/n)\Big) + n(n-1) \cdot \Big( \E{I_{i,j}}-\E{I_i}\E{I_j} \Big) $$ where $I_{i,j}$ is the indicator for both $i$th and $j$th student being seated at the same seat. There are $n!$ total permutations of seatings, and we can fix the seating of $i$th and $j$th student, which leaves with total of $(n-2)!$ possible permutations. Hence the probability that both students are seated at their seats is $(n-2)!/n! = 1/(n(n-1))$. Hence, $$\var{X} = n \cdot \Big((1/n)(1-1/n)\Big) + n(n-1) \cdot \left( \frac{1}{n(n-1)} - \frac{1}{n^2} \right) = 1 - \frac{1}{n} + 1 - \frac{n-1}{n} = 1 $$
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item For $n$ large, find a good, simple approximations for $P(X \leq 2)$. 
+    
+    \begin{soln}
+    For large $n$, this is the story of a Poisson. As $n$ gets larger and larger, it get rarer and rarer for students to find their seat, but there are more students for this to happen. That is the rate is approximately constant. Hence for large $n$, we can approximate $X$ as a Poisson. 
+    
+    To show this, we already know that we can show the probability of $X=0$ is approximately $e^{-1}$. That is, the number of derangements (permutations where none of the students are seated properly) is $n!/e$. $n!$ times the $P(X=k)$ is the number of permutations where exactly $k$ student is seated properly. This is the same as first fixing some $K$ students (for which there are $\binom{n}{k}$ possibilities), and then seating the rest of the students in a derangment of $n-k$ students, which we know to approximate as $(n-k)!/e$. Thus, $$P(X=k) \approx \binom{n}{k} \cdot n! \cdot (n-k)! e^{-1} = \frac{(1)^k e^{-1}}{k!} $$ which is the PMF of a Poisson. Hence, $$P(X \leq 2) = P(X=0)+P(X=1)+P(X=2) \approx e^{-1} + e^{-1} + e^{-1}/2 = 2.5 e^{-1} \approx 91.97\%$$
+    \end{soln}
+    
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob}
+\begin{enumerate}[label = (\alph*)]
+    \item A certain machine often breaks down and needs to be fixed. At time 0, the machine is working. It works for an Expo($\lambda$) period of time (measured in days), and then breaks down. It then takes an Expo($\lambda$) amount of time to get it fixed, after which it will work for an Expo($\lambda$) time until it breaks down again, after which it will take an Expo($\lambda$) time to get it fixed, etc. Assume that these Expo($\lambda$) r.v.s are i.i.d.
+
+    A transition occurs when the machine switches from working to being broken, or switches from being broken to working. Find the distribution of the number of transitions that occur in the time interval (0,$t$). (Simplify.)
+    
+    \begin{soln} Remembering back to the story of Poisson process, we realize the occurrence of transitions exactly forms Poisson process with rate $\lambda$. Hence the number of transitions occurring in time interval of $t$ is distributed $\Pois(\lambda t)$.
+    \end{soln}
+    
+    \dotfill
+    
+    \item Hoping to reduce the frequency of breakdowns, the machine is redesigned so that it can continue to function even if one component has failed. The redesigned machine has 5 components, each of which works for an Expo($\lambda$) amount of time and then fails, independently. The machine works properly if and only if at most one component has failed. Currently, all 5 components are working (none have failed). Find the expected time until the machine breaks down. (Simplify.)
+    
+    \begin{soln} Let $X_1$ be the time until the first component breaks down, $X_2$ be the time between the second component breaks down and $X_1$, $\ldots$, and $X_5$ be the time between the last component to break down and $X_4$. Then letting $X$ be the time till the machine breaks down, $X = X_1 + X_2 + X_3 + X_4 + X_5$. 
+    
+    Note that the time till the first component breaking is just the minimum of the failure time of 5 components. This we know is $\Expo(5 \lambda)$. Hence, $\E{X_1} = \frac{1}{5 \lambda}$. 
+    
+    By the memoryless property of exponential, the extra failure time of remaining components is still $\Expo(\lambda)$, and thus $X_2$ is the minimum of $4$ $\Expo(\lambda)$, which we know is $\Expo(4\lambda)$. Hence $\E{X_2} = \frac{1}{4\lambda}$.
+    
+    Similarly, we find that $\E{X_i} = \frac{1}{i\lambda}$ for $i \in \{1,2,3,4,5\}$. Hence, $$\E{X} = \sum_{i=1}^5 \E{X_i} = \sum_{i=1}^5 \frac{1}{i\lambda} = \frac{1}{\lambda} \left( \frac{1}{1} + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \frac{1}{5} \right) = \frac{137}{60\lambda} $$
+    
+    \end{soln}
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob}A  DNA sequence can be represented as a sequence of letters, where the ``alphabet''
+has 4 letters: A,C,G,T. Suppose that a random DNA sequence of length $n \geq 4$ is formed
+by independently generating letters one at a time, with $p_A$, $p_C$, $p_G$, $p_T$ the probabilities of A,C,G,T, respectively, where $p_A + p_C + p_G + p_T = 1$.
+
+\begin{enumerate}[label = (\alph*)]
+    \item Find the covariance between the number of A's and the number of C's in the sequence.
+    
+    \begin{soln} This is the story of Multinomial. That is, $(A,C,G,T) \sim \Mult_k(n,(p_A,p_C,p_G,p_T))$. We know that the covariance of $A$ and $C$ is then $-np_Ap_C$. 
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item It is observed that the sequence contains exactly $a$ A's, $c$ C's, $g$ G's, and $t$ T's, where $a + c + g + t = n$ and $a \geq 2$. Given this information, find the probability that the first A in the sequence is followed immediately by another A.
+    
+    \begin{soln} By symmetry, the probability that the letter right after the first $A$ is $A$ is the same as the probability that the last letter is $A$. This is just $a/n$. (This is the same as the face-card problem in problem 7, problem set 2. 
+    
+    \end{soln}
+    
+    \dotfill
+    
+    \item Given the information from (b) about how many times each letter occurs, find the expected number of occurrences of the expression CAT in the sequence.
+    
+    \begin{soln}
+    
+    Let $I_i$ for $i \in \{1,2,\ldots,n-2\}$ be the indicator r.v. for $i,i+1,i+2$th letters forming CAT as a sequence. By symmetry (since all the positions are exchangeable) $E(I_i)$ is equivalent for all $i$. Hence if $X$ denotes the number of occurrences of CAT, $$\E{X} = \sum_{i=1}^{n-2} \E{I_i} = (n-2) \E{I_1}$$ $\E{I_1}$ is the probability that the first three letters of the sequence is CAT, which is $$ \frac{c}{n} \cdot \frac{a}{n-1} \cdot \frac{t}{n-2} = \frac{cat}{n(n-1)(n-2)} $$ Hence $$\E{X} = \frac{cat}{n(n-1)}$$
+    
+    \end{soln}
+    
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob} Let $X,Y,Z \sim \Norm(0,1)$ be i.i.d., $\Phi$ be the $\Norm(0,1)$ CDF and $W = \Phi(Z)^2$. 
+
+\begin{enumerate}[label = (\alph*)]
+    \item Find the CDF and PDF of $W$. Also give the name and parameters of the distribution of $W$.
+    
+    \begin{soln}
+    We know that $\Phi(Z) \sim \Unif(0,1)$ by Universality of Uniform. Hence, for $t \in [0,1]$, $$P(W \leq t) = P(U^2 \leq t) = P(U \leq \sqrt{t}) = \sqrt{t}$$ Take the derivative of this to get that the PDF is $1/\sqrt{2t}$. Hence, $$F_W(t) = \Pr[W \leq t] = \begin{cases} 0 & t < 0 \\ \sqrt{t} & t \in [0,1] \\ 1 & t > 1 \end{cases}$$ $$ f_W(t) = \begin{cases} 1/\sqrt{2t} & t \in [0,1] \\ 0 & \text{otherwise} \end{cases} $$ Remembering that the PDF of $\Beta(a,b)$ is proportional to $t^{a-1} (1-t)^{b-1}$, we see that $\Beta(1/2,1)$ would be proportional to $1/\sqrt{t}$. Hence $W \sim \Beta(1/2,1)$. (This is a generalization of the fact that $U^{\alpha} \sim \Beta(1/\alpha,1)$). 
+    \end{soln}
+    
+    \dotfill
+    
+    \item Let $f_W$ be the PDF of $W$ and $\varphi$ be the PDF of $Z$. Find the unsimplified expressions for $\E{W^3}$ as integrals in two different ways, one based on $f_W$ and one based on $\varphi$. 
+    
+    \begin{soln}
+    By LOTUS, $$\E{W^3} = \int_0^1 t^3 f_W(t) \dd{t} $$ Since $W^3 = \Phi(Z)^6$, $$\E{W^3} = \E{\Phi(Z)^6} = \int_{-\infty}^{\infty} \Phi(z)^6 \varphi(z) \dd{z} $$ 
+    \end{soln} 
+    
+    \dotfill
+    
+    \item Find $P(X+2Y < 2Z+3)$ in terms of $\Phi$. 
+    
+    Since $X,Y,Z$ are independent, $(X,Y,Z)$ form a Multinormal. That is, $X+2Y-2Z \sim \Norm(0, 1^2+2^2+2^2) = \Norm(0,9) = 3 \Norm(0,1)$. Hence, $$P(X+2Y<2Z+3) = P(X+2Y-2Z < 3) = P(\Norm(0,1) < 1) = \Phi(1)$$
+    
+\end{enumerate}
+
+\end{prob}
+
+\pagebreak
+
+\begin{prob}
+
+\begin{enumerate}[label = (\alph*)]
+    \item There are three blocks, floating in a sea of lava. Label the blocks 1, 2, 3, from left to right. Sonic the Hedgehog is standing on block 1. To reach safety, he must get to block 3. He can't jump directly from block 1 to block 3; his only hope is to jump from block 1 to block 2, then jump from block 2 to block 3. Each time he jumps, he has probability 1/2 of success and probability 1/2 of ``dying'' by falling into the lava. If he ``dies'', he starts again at block 1. Let $J$ be the total number of jumps that Sonic will make in order to get to block 3. Find $E(J)$. (Simplify.)
+    
+    \begin{soln}
+    
+    We can model this as an irreducible Markov chain with state 1,2,3 with transition probability $$\pmqty{1/2 & 1/2 & 0 \\ 1/2 & 0 & 1/2 \\ 1 & 0 & 0}$$ Then, the expected time of returning to state 3 from state 3 is one more than the expected time of going from state 1 to state 3 (since once you are at state 3, you automatically go to state 1). As an irreducible Markov chain, we know that the stationary distribution is inverse of the expected return time. The stationary distribution (which you can calculate using eigenanalysis) is $(4/7,2/7,1/7)$. That is, the expected return time of state 3 is $7$, and thus the expected time of going from $1$ to $3$ is $6$. 
+    
+    We can also solve this using first step analysis. Let $a_1,a_2$ be expected time to go from state 1 to state 3 and expected time to go from state 2 to state 3. Then by LOTE, $$\E{X_1} = \frac{1}{2} \cdot (\E{X_2}+1) + \frac{1}{2} \cdot (\E{X_1}+1) $$ $$ \E{X_2} = \frac{1}{2} + \frac{1}{2} (\E{X_1}+1) $$ Solving this you get that $\E{X_1} = 6$ and $\E{X_2} = 4$. 
+    
+    \end{soln} 
+    
+    \dotfill
+    
+    \item Consider the following Markov chain with $52! = 8 \times 10^{67}$ staes. The states are possible orderings of a standard 52-card deck. To run one step of the chain, pick $2$ different cards from the deck, with all pairs equally likely, and swap 2 cards. Find the stationary distribution of this chain.
+    
+    \begin{soln}
+    
+    The stationary distribution is just the uniform distribution over all $52!$ permutations. This is because the number of neighbors that a permutation has is the same (since all permutations are exchangeable). Hence, this is a random walk on a graph where degree of all nodes are the same, and the stationary distribution is thus the uniform distributions over all permutations.
+    
+    \end{soln}
+\end{enumerate}
+
+\end{prob}
+
+
+\end{document}
